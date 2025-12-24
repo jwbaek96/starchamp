@@ -3,8 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Vote for your favorite stars from around the world">
+    <meta name="description" content="당신의 스타를 응원하세요! 전 세계 팬들과 함께하는 실시간 투표 플랫폼 StarChamp">
     <meta name="theme-color" content="#0f172a">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://starchamp.kr/">
+    <meta property="og:title" content="StarChamp - Global Fandom Voting">
+    <meta property="og:description" content="당신의 스타를 응원하세요! 전 세계 팬들과 함께하는 실시간 투표 플랫폼 StarChamp">
+    <meta property="og:image" content="https://starchamp.kr/logo/logo.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://starchamp.kr/">
+    <meta property="twitter:title" content="StarChamp - Global Fandom Voting">
+    <meta property="twitter:description" content="당신의 스타를 응원하세요! 전 세계 팬들과 함께하는 실시간 투표 플랫폼 StarChamp">
+    <meta property="twitter:image" content="https://starchamp.kr/logo/logo.jpg">
     
     <!-- PWA Settings -->
     <link rel="manifest" href="manifest.json">
@@ -391,7 +405,7 @@
 
     <!-- My Page Modal -->
     <div id="myPageModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
-        <div class="glass-card rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto p-6 animate-in">
+        <div class="glass-card rounded-2xl max-w-md w-full max-h-[95dvh] overflow-y-auto p-6 animate-in">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-xl md:text-2xl font-bold" data-i18n="mypage">My Page</h3>
                 <button id="closeMyPageModal" class="text-slate-400 hover:text-slate-200 transition-colors">
@@ -462,7 +476,7 @@
 
     <!-- Login Modal -->
     <div id="loginModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
-        <div class="glass-card rounded-2xl max-w-sm w-full p-8 animate-in text-center">
+        <div class="glass-card rounded-2xl max-w-sm w-full max-h-[95dvh] overflow-y-auto p-8 animate-in text-center">
             <div class="flex justify-end mb-2">
                 <button id="closeLoginModal" class="text-slate-400 hover:text-slate-200 transition-colors">
                     <i data-lucide="x" class="w-6 h-6"></i>
@@ -488,7 +502,7 @@
 
     <!-- Settings Modal -->
     <div id="settingsModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
-        <div class="glass-card rounded-2xl max-w-sm w-full p-6 animate-in">
+        <div class="glass-card rounded-2xl max-w-sm w-full max-h-[95dvh] overflow-y-auto p-6 animate-in">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-xl font-bold" data-i18n="settings">Settings</h3>
                 <button id="closeSettingsModal" class="text-slate-400 hover:text-slate-200 transition-colors">
@@ -541,7 +555,7 @@
     
     <!-- Add Star Modal -->
     <div id="addStarModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
-        <div class="glass-card rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 animate-in">
+        <div class="glass-card rounded-2xl max-w-2xl w-full max-h-[95dvh] overflow-y-auto p-6 animate-in">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-xl md:text-2xl font-bold" data-i18n="add_star">Add New Star</h3>
                 <button id="closeAddModal" class="text-slate-400 hover:text-slate-200 transition-colors">
@@ -716,7 +730,7 @@
 
     <!-- Edit Star Modal (Admin Only) -->
     <div id="editStarModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
-        <div class="glass-card rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 animate-in">
+        <div class="glass-card rounded-2xl max-w-2xl w-full max-h-[95dvh] overflow-y-auto p-6 animate-in">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-xl md:text-2xl font-bold">Edit Star Info</h3>
                 <button id="closeEditModal" class="text-slate-400 hover:text-slate-200 transition-colors">
@@ -893,7 +907,7 @@
     
     <!-- Star Detail Modal -->
     <div id="detailModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
-        <div class="glass-card rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 animate-in">
+        <div class="glass-card rounded-2xl max-w-3xl w-full max-h-[95dvh] overflow-y-auto p-6 animate-in">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-xl md:text-2xl font-bold" id="detailName">Star Name</h3>
                 <button id="closeDetailModal" class="text-slate-400 hover:text-slate-200 transition-colors">
@@ -950,7 +964,7 @@
     
     <!-- Ad Mission Modal -->
     <div id="adMissionModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
-        <div class="bg-white rounded-[2.5rem] max-w-sm w-full p-8 animate-in text-center relative overflow-hidden shadow-2xl">
+        <div class="bg-white rounded-[2.5rem] max-w-sm w-full max-h-[95dvh] overflow-y-auto p-8 animate-in text-center relative overflow-hidden shadow-2xl">
             <!-- Background Decorative Text -->
             <!-- <div class="absolute top-6 left-0 right-0 opacity-[0.08] pointer-events-none select-none">
                 <span class="text-5xl font-serif italic text-amber-700 whitespace-nowrap">Vote for Your Star!</span>
@@ -988,7 +1002,7 @@
         // Import Firebase modules
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-        import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, increment, updateDoc, doc, serverTimestamp, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, increment, updateDoc, doc, serverTimestamp, getDoc, setDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
         import { GoogleGenerativeAI } from 'https://esm.run/@google/generative-ai';
         
         // Firebase Configuration
@@ -1003,8 +1017,16 @@
         };
 
         // Gemini API Configuration (Replace with your actual API Key)
-        const GEMINI_API_KEY = "YOUR_GEMINI_API_KEY_HERE";
-        const genAI = new GoogleGenerativeAI(GEMINI_API_KEY, { apiVersion: "v1" });
+        const GEMINI_API_KEY = "AIzaSyAWEHXZ662ASu21uKv5KZh88I1Wn8lGu54";
+        let genAI = null;
+        try {
+            if (GEMINI_API_KEY && !GEMINI_API_KEY.includes("YOUR_GEMINI_API_KEY")) {
+                // Initialize with default settings, version will be handled by the SDK
+                genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+            }
+        } catch (e) {
+            console.error("Gemini Init Error:", e);
+        }
         
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
@@ -1020,6 +1042,7 @@
         let currentTheme = 'light';
         let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
         let isAdmin = false;
+        let unsubscribeStars = null;
         
         // Translation Dictionary
         const translations = {
@@ -1512,7 +1535,6 @@
 
                 alert(currentLang === 'ko' ? '수정되었습니다.' : 'Updated successfully.');
                 closeEditModal();
-                loadStars(); // Refresh main list
             } catch (error) {
                 console.error("Detailed Error updating star:", error);
                 if (error.code === 'permission-denied') {
@@ -1533,11 +1555,20 @@
                 return;
             }
 
-            if (GEMINI_API_KEY === "YOUR_GEMINI_API_KEY") {
+            if (GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE") {
                 alert(currentLang === 'ko' ? 
                     'Gemini API 키가 설정되지 않았습니다. 코드에서 GEMINI_API_KEY를 설정해주세요.' : 
                     'Gemini API Key is not set. Please set GEMINI_API_KEY in the code.');
                 return;
+            }
+
+            if (!genAI) {
+                try {
+                    genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+                } catch (e) {
+                    alert(currentLang === 'ko' ? 'Gemini 초기화 실패' : 'Gemini initialization failed');
+                    return;
+                }
             }
 
             const btn = document.getElementById('editAiSummaryBtn');
@@ -1557,7 +1588,7 @@
                     Example: {"ko": "...", "en": "..."}
                 `;
 
-                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+                const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
                 const result = await model.generateContent(prompt);
                 const response = await result.response;
                 let text = response.text();
@@ -1590,7 +1621,6 @@
                 const starRef = doc(db, 'stars', starId);
                 await updateDoc(starRef, { is_visible: true });
                 alert('Star approved!');
-                loadStars(); // Refresh main list
             } catch (error) {
                 console.error("Error approving star:", error);
                 alert('Failed to approve.');
@@ -1814,11 +1844,15 @@
             }
         }
         
-        // Load Stars from Firestore
+        // Load Stars from Firestore with Real-time Listener
         async function loadStars() {
             try {
+                // Unsubscribe from previous listener if exists
+                if (unsubscribeStars) {
+                    unsubscribeStars();
+                }
+
                 document.getElementById('loadingSpinner').classList.remove('hidden');
-                document.getElementById('rankingList').classList.add('hidden');
                 
                 // Admin sees all stars, users see only visible ones
                 let q;
@@ -1831,19 +1865,28 @@
                     );
                 }
                 
-                const snapshot = await getDocs(q);
-                allStars = snapshot.docs
-                    .map(doc => ({
+                // Set up real-time listener
+                unsubscribeStars = onSnapshot(q, (snapshot) => {
+                    allStars = snapshot.docs.map(doc => ({
                         id: doc.id,
                         ...doc.data()
-                    }))
-                    .sort((a, b) => (b.votes || 0) - (a.votes || 0));
-                
-                document.getElementById('loadingSpinner').classList.add('hidden');
-                renderStars(allStars);
+                    }));
+                    
+                    // Initial sort by votes
+                    allStars.sort((a, b) => (b.votes || 0) - (a.votes || 0));
+                    
+                    document.getElementById('loadingSpinner').classList.add('hidden');
+                    
+                    // Apply current filters and render
+                    filterStars();
+                }, (error) => {
+                    console.error('Error in stars listener:', error);
+                    document.getElementById('loadingSpinner').classList.add('hidden');
+                    document.getElementById('emptyState').classList.remove('hidden');
+                });
                 
             } catch (error) {
-                console.error('Error loading stars:', error);
+                console.error('Error setting up stars listener:', error);
                 document.getElementById('loadingSpinner').classList.add('hidden');
                 document.getElementById('emptyState').classList.remove('hidden');
             }
@@ -1910,10 +1953,17 @@
                                 <p class="text-[10px] md:text-sm text-slate-400 truncate">${subtitle}</p>
                             </div>
                             <div class="flex items-center gap-1">
-                                <!-- Quick Vote Button -->
-                                <button onclick="event.stopPropagation(); handleQuickVote('${star.id}')" class="bg-violet-500 hover:bg-violet-600 text-white p-1.5 md:p-2 rounded-full active:scale-90 transition-all shadow-lg shadow-violet-500/20">
-                                    <i data-lucide="heart" class="w-4 h-4 md:w-5 md:h-5 fill-current"></i>
-                                </button>
+                                ${isAdmin && !star.is_visible ? `
+                                    <!-- Approve Button for Admin -->
+                                    <button onclick="event.stopPropagation(); handleAdminApproveFromList('${star.id}')" class="bg-green-500 hover:bg-green-600 text-white p-1.5 md:p-2 rounded-full active:scale-90 transition-all shadow-lg shadow-green-500/20">
+                                        <i data-lucide="check" class="w-4 h-4 md:w-5 md:h-5"></i>
+                                    </button>
+                                ` : `
+                                    <!-- Quick Vote Button -->
+                                    <button onclick="event.stopPropagation(); handleQuickVote('${star.id}')" class="bg-violet-500 hover:bg-violet-600 text-white p-1.5 md:p-2 rounded-full active:scale-90 transition-all shadow-lg shadow-violet-500/20">
+                                        <i data-lucide="heart" class="w-4 h-4 md:w-5 md:h-5 fill-current"></i>
+                                    </button>
+                                `}
                                 <!-- Favorite Button -->
                                 <button onclick="event.stopPropagation(); toggleFavorite('${star.id}')" class="p-1.5 md:p-2 hover:bg-slate-700/50 rounded-full transition-colors group">
                                     <i data-lucide="star" class="w-4 h-4 md:w-5 md:h-5 ${isFavorite ? 'fill-yellow-400 text-yellow-400' : 'text-slate-400 group-hover:text-yellow-400'}"></i>
@@ -2076,11 +2126,20 @@
                 return;
             }
 
-            if (GEMINI_API_KEY === "YOUR_GEMINI_API_KEY") {
+            if (GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE") {
                 alert(currentLang === 'ko' ? 
                     'Gemini API 키가 설정되지 않았습니다. 코드에서 GEMINI_API_KEY를 설정해주세요.' : 
                     'Gemini API Key is not set. Please set GEMINI_API_KEY in the code.');
                 return;
+            }
+
+            if (!genAI) {
+                try {
+                    genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+                } catch (e) {
+                    alert(currentLang === 'ko' ? 'Gemini 초기화 실패' : 'Gemini initialization failed');
+                    return;
+                }
             }
 
             const btn = document.getElementById('aiSummaryBtn');
@@ -2092,7 +2151,7 @@
                 btn.classList.add('opacity-70', 'cursor-not-allowed');
                 btnText.textContent = currentLang === 'ko' ? 'AI 요약 생성 중...' : 'Generating AI Summary...';
 
-                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
                 
                 const prompt = `
                     You are a helpful assistant for a fandom voting app called StarChamp.
@@ -2217,7 +2276,6 @@
                 });
                 alert(currentLang === 'ko' ? "스타가 승인되었습니다!" : "Star approved successfully!");
                 closeDetailModal();
-                await loadStars(); // Reload list to show approved star
             } catch (error) {
                 console.error("Error approving star:", error);
                 alert(currentLang === 'ko' ? "승인 중 오류가 발생했습니다." : "Failed to approve star.");
@@ -2278,7 +2336,6 @@
                 
                 // Reload data
                 updateAuthUI(currentUser);
-                await loadStars();
                 if (!starId) closeDetailModal();
                 
             } catch (error) {
