@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="당신의 스타를 응원하세요! 전 세계 팬들과 함께하는 실시간 투표 플랫폼 StarChamp">
     <meta name="theme-color" content="#0f172a">
+    <meta name="google-site-verification" content="4sA6fUtsNOVaj7_UmR6bG8duAl6w8cSGdVPcrcZ-tEw" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
@@ -29,11 +30,19 @@
     <meta name="apple-mobile-web-app-title" content="StarChamp">
     
     <!-- Google AdSense / H5 Ads SDK -->
-     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5352248234640810"
-     crossorigin="anonymous"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5352248234640810" crossorigin="anonymous"></script>
     <script>
         window.adsbygoogle = window.adsbygoogle || [];
         const adBreak = function(o) { adsbygoogle.push(o); }
+    </script>
+
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SV6C7L3NBH"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-SV6C7L3NBH');
     </script>
 
     <title>⭐ StarChamp - Global Fandom Voting</title>
@@ -351,8 +360,11 @@
                             id="searchInput" 
                             placeholder="Search stars..."
                             data-i18n-placeholder="search_placeholder"
-                            class="w-full bg-slate-900/50 border border-slate-700 rounded-full pl-9 md:pl-10 pr-4 py-1.5 md:py-2 text-sm md:text-base focus:outline-none focus:border-violet-500 transition-colors"
+                            class="w-full bg-slate-900/50 border border-slate-700 rounded-full pl-9 md:pl-10 pr-10 py-1.5 md:py-2 text-sm md:text-base focus:outline-none focus:border-violet-500 transition-colors"
                         >
+                        <button id="clearSearch" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 transition-colors">
+                            <i data-lucide="x-circle" class="w-4 h-4 md:w-5 md:h-5"></i>
+                        </button>
                     </div>
                     
                     <div class="grid grid-cols-2 md:flex gap-3 md:gap-4">
@@ -382,6 +394,14 @@
             
             <!-- Ranking List -->
             <section>
+                <div class="flex justify-between items-center mb-4 px-1">
+                    <h3 class="text-lg font-bold flex items-center gap-2">
+                        <i data-lucide="trophy" class="w-5 h-5 text-yellow-400"></i>
+                        <span data-i18n="ranking_title">Star Ranking</span>
+                    </h3>
+                    <span id="totalStarsCount" class="text-xs text-slate-400 font-medium">0 Stars</span>
+                </div>
+
                 <div id="loadingSpinner" class="flex justify-center items-center py-20">
                     <div class="spinner"></div>
                 </div>
@@ -959,6 +979,9 @@
                 <button id="detailFavoriteBtn" class="flex-1 glass-card hover:bg-slate-800/70 px-4 md:px-6 py-3 md:py-4 rounded-full font-bold text-base md:text-lg active:scale-95 transition-all flex items-center justify-center gap-2">
                     <i id="detailFavoriteIcon" data-lucide="star" class="w-5 h-5 md:w-6 md:h-6"></i>
                 </button>
+                <button id="detailShareBtn" class="flex-1 glass-card hover:bg-slate-800/70 px-4 md:px-6 py-3 md:py-4 rounded-full font-bold text-base md:text-lg active:scale-95 transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="share-2" class="w-5 h-5 md:w-6 md:h-6"></i>
+                </button>
             </div>
             
             <!-- Admin Actions -->
@@ -1125,7 +1148,8 @@
                 voted_for: "에게 투표함",
                 ad_mission_title: "무료 투표권 받기!",
                 ad_mission_desc: "짧은 광고를 시청하면 투표권 3개를 무료로 드립니다.",
-                watch_ad: "PLAY"
+                watch_ad: "PLAY",
+                ranking_title: "스타 랭킹"
             },
             en: {
                 login: "Sign In",
@@ -1158,7 +1182,7 @@
                 submit: "Submit",
                 approval_notice: "Your submission will be visible after admin approval",
                 total_votes: "Total Votes",
-                vote_now: "Vote Now",
+                vote_now: "Vote",
                 votes_by_country: "Votes by Country",
                 votes: "votes",
                 rank: "Rank",
@@ -1183,7 +1207,8 @@
                 voted_for: "voted for",
                 ad_mission_title: "Get Free Tickets!",
                 ad_mission_desc: "Watch a short video ad and get 3 free voting tickets.",
-                watch_ad: "PLAY"
+                watch_ad: "PLAY",
+                ranking_title: "Star Ranking"
             }
         };
         
@@ -1227,6 +1252,24 @@
             loadStars();
             initLucideIcons();
             registerServiceWorker();
+
+            // Check for deep link (star ID in URL)
+            const urlParams = new URLSearchParams(window.location.search);
+            const starIdFromUrl = urlParams.get('star');
+            if (starIdFromUrl) {
+                // We need to wait for stars to load before opening the modal
+                const checkStarsLoaded = setInterval(() => {
+                    if (allStars.length > 0) {
+                        const star = allStars.find(s => s.id === starIdFromUrl);
+                        if (star) {
+                            openDetailModal(starIdFromUrl);
+                        }
+                        clearInterval(checkStarsLoaded);
+                    }
+                }, 500);
+                // Stop checking after 5 seconds
+                setTimeout(() => clearInterval(checkStarsLoaded), 5000);
+            }
             
             // Auth State Observer
             onAuthStateChanged(auth, async (user) => {
@@ -1239,6 +1282,52 @@
                 }
                 updateAuthUI(user);
             });
+        }
+
+        // Share Function
+        window.handleShare = async function(starId, starName) {
+            const shareUrl = `${window.location.origin}${window.location.pathname}?star=${starId}`;
+            const shareTitle = `StarChamp - ${starName}`;
+            const shareText = currentLang === 'ko' 
+                ? `⭐ ${starName}에게 투표해주세요! 실시간 스타 랭킹 StarChamp`
+                : `⭐ Vote for ${starName}! Real-time star ranking on StarChamp`;
+
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: shareTitle,
+                        text: shareText,
+                        url: shareUrl
+                    });
+                    // GA4 Event
+                    if (typeof gtag !== 'undefined') {
+                        gtag('event', 'share', {
+                            method: 'Web Share API',
+                            content_type: 'star',
+                            item_id: starId
+                        });
+                    }
+                } catch (err) {
+                    console.log('Share cancelled or failed:', err);
+                }
+            } else {
+                // Fallback: Copy to clipboard
+                try {
+                    await navigator.clipboard.writeText(shareUrl);
+                    alert(currentLang === 'ko' ? '링크가 복사되었습니다!' : 'Link copied to clipboard!');
+                    // GA4 Event
+                    if (typeof gtag !== 'undefined') {
+                        gtag('event', 'share', {
+                            method: 'Clipboard Copy',
+                            content_type: 'star',
+                            item_id: starId
+                        });
+                    }
+                } catch (err) {
+                    console.error('Failed to copy:', err);
+                    alert(currentLang === 'ko' ? '공유 링크: ' + shareUrl : 'Share link: ' + shareUrl);
+                }
+            }
         }
 
         // Sync User Data with Firestore
@@ -1368,9 +1457,34 @@
                     }
                 }
             });
+            document.getElementById('detailShareBtn').addEventListener('click', () => {
+                if (currentStarId) {
+                    const star = allStars.find(s => s.id === currentStarId);
+                    const name = star.name?.[currentLang] || star.name?.ko || 'Star';
+                    handleShare(currentStarId, name);
+                }
+            });
             
             // Search & Filter
-            document.getElementById('searchInput').addEventListener('input', filterStars);
+            const searchInput = document.getElementById('searchInput');
+            const clearSearchBtn = document.getElementById('clearSearch');
+            
+            searchInput.addEventListener('input', () => {
+                if (searchInput.value.length > 0) {
+                    clearSearchBtn.classList.remove('hidden');
+                } else {
+                    clearSearchBtn.classList.add('hidden');
+                }
+                filterStars();
+            });
+
+            clearSearchBtn.addEventListener('click', () => {
+                searchInput.value = '';
+                clearSearchBtn.classList.add('hidden');
+                filterStars();
+                searchInput.focus();
+            });
+
             document.getElementById('categoryFilter').addEventListener('change', filterStars);
             document.getElementById('sortFilter').addEventListener('change', filterStars);
             
@@ -2012,6 +2126,10 @@
                                 <button onclick="event.stopPropagation(); toggleFavorite('${star.id}')" class="p-1.5 md:p-2 hover:bg-slate-700/50 rounded-full transition-colors group">
                                     <i data-lucide="star" class="w-4 h-4 md:w-5 md:h-5 ${isFavorite ? 'fill-yellow-400 text-yellow-400' : 'text-slate-400 group-hover:text-yellow-400'}"></i>
                                 </button>
+                                <!-- Share Button -->
+                                <button onclick="event.stopPropagation(); handleShare('${star.id}', '${name.replace(/'/g, "\\'")}')" class="p-1.5 md:p-2 hover:bg-slate-700/50 rounded-full transition-colors group">
+                                    <i data-lucide="share-2" class="w-4 h-4 md:w-5 md:h-5 text-slate-400 group-hover:text-violet-400"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -2064,6 +2182,12 @@
                     const nameB = (b.name?.[currentLang] || b.name?.ko || '').toLowerCase();
                     return nameA.localeCompare(nameB, currentLang === 'ko' ? 'ko' : 'en');
                 });
+            }
+            
+            // Update count
+            const countEl = document.getElementById('totalStarsCount');
+            if (countEl) {
+                countEl.textContent = `${filtered.length} ${currentLang === 'ko' ? '명의 스타' : 'Stars'}`;
             }
             
             renderStars(filtered);
@@ -2377,6 +2501,14 @@
                 });
                 
                 alert(currentLang === 'ko' ? '투표가 완료되었습니다! 🎉' : 'Vote counted! 🎉');
+                
+                // GA4 Event
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'vote', {
+                        star_id: targetId,
+                        star_name: allStars.find(s => s.id === targetId)?.name?.en || 'Unknown'
+                    });
+                }
                 
                 // Reload data
                 updateAuthUI(currentUser);
