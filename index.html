@@ -105,7 +105,7 @@
         }
 
         .logo-glow {
-            filter: drop-shadow(0 0 20px rgba(167, 139, 250, 0.6));
+            filter: drop-shadow(0 0 10px rgba(254, 254, 105, 0.899));
         }
         
         /* Loading Spinner */
@@ -216,6 +216,11 @@
         body.light-theme .modal-backdrop {
             background: rgba(0, 0, 0, 0.4);
         }
+        .space-y-4 > :not([hidden]) ~ :not([hidden]){
+            --tw-space-y-reverse: 0;
+            margin-top: 7px !important;
+            margin-bottom: calc(1rem * var(--tw-space-y-reverse));
+        }
     </style>
 </head>
 <body class="min-h-screen">
@@ -251,17 +256,17 @@
         </header>
         
         <!-- Main Content -->
-        <main class="max-w-6xl mx-auto px-2 md:px-4 py-8">
+        <main class="max-w-6xl mx-auto px-2 md:px-4 py-3">
             
             <!-- Hero Section -->
-            <section class="text-center mb-12 animate-in">
+            <section class="text-center mb-1 animate-in">
                 <!-- <h2 class="text-4xl md:text-5xl font-bold mb-4 tracking-tight">
                     <span data-i18n="hero_title">Vote for Your Champion</span>
                 </h2> -->
                 <img src="logo/1000012580.png" alt="StarChamp Hero" class="mx-auto mb-0 max-w-full md:max-w-sm logo-glow">
-                <p class="text-slate-400 text-sm md:text-lg mb-2">
+                <!-- <p class="text-slate-400 text-sm md:text-lg mb-2">
                     <span data-i18n="hero_subtitle">Support your favorite stars from around the world</span>
-                </p>
+                </p> -->
             </section>
             
             <!-- Search & Filter -->
@@ -290,6 +295,7 @@
                             <option value="business" data-i18n="business">Businessperson</option>
                             <option value="ordinary" data-i18n="ordinary">Ordinary Person</option>
                             <option value="other" data-i18n="other">Other</option>
+                            <option id="pendingFilterOption" value="pending" class="hidden" data-i18n="pending">Pending</option>
                         </select>
                         
                         <!-- Sort -->
@@ -352,7 +358,10 @@
                     <div class="flex items-center gap-4 mb-4">
                         <img id="myPageUserAvatar" src="" alt="User" class="w-16 h-16 rounded-full border-2 border-violet-500">
                         <div>
-                            <p id="myPageUserName" class="font-bold text-lg md:text-xl"></p>
+                            <div class="flex items-center gap-2">
+                                <p id="myPageUserName" class="font-bold text-lg md:text-xl"></p>
+                                <span id="adminBadge" class="hidden bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">ADMIN</span>
+                            </div>
                             <p id="myPageUserEmail" class="text-xs md:text-sm text-slate-400"></p>
                         </div>
                     </div>
@@ -465,6 +474,12 @@
 
                 <!-- Add Star Section -->
                 <div class="pt-4 border-t border-slate-700/50">
+                    <!-- Admin Dashboard Button (Visible only to admin) -->
+                    <button id="adminDashboardBtn" class="hidden w-full bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-full font-bold flex items-center justify-center gap-2 active:scale-95 transition-all mb-3">
+                        <i data-lucide="shield-check" class="w-5 h-5"></i>
+                        <span>Admin Dashboard</span>
+                    </button>
+
                     <p class="text-sm text-slate-400 mb-4 leading-relaxed" data-i18n="add_star_desc">
                         We create StarChamp together with our users. If you can't find the star you're looking for, please register them!
                     </p>
@@ -548,6 +563,18 @@
                         class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-2 focus:outline-none focus:border-violet-500 transition-colors"
                         placeholder="e.g., BigHit Entertainment"
                     >
+                </div>
+
+                <!-- AI Summary Button -->
+                <div class="pt-2">
+                    <button 
+                        type="button"
+                        id="aiSummaryBtn"
+                        class="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white px-4 py-2.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 active:scale-95 transition-all shadow-lg shadow-indigo-500/20"
+                    >
+                        <i data-lucide="sparkles" class="w-4 h-4"></i>
+                        <span id="aiBtnText">AI 요약 생성 (Gemini)</span>
+                    </button>
                 </div>
                 
                 <!-- Description (Korean) -->
@@ -637,6 +664,175 @@
             </form>
         </div>
     </div>
+
+    <!-- Edit Star Modal (Admin Only) -->
+    <div id="editStarModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
+        <div class="glass-card rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 animate-in">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl md:text-2xl font-bold">Edit Star Info</h3>
+                <button id="closeEditModal" class="text-slate-400 hover:text-slate-200 transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            
+            <form id="editStarForm" class="space-y-4">
+                <input type="hidden" id="editStarId">
+                <!-- Name (Korean) -->
+                <div>
+                    <label class="block text-sm font-medium mb-2">
+                        <span>Name (Korean)</span>
+                        <span class="text-red-400">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="editNameKo" 
+                        required
+                        class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-2 focus:outline-none focus:border-violet-500 transition-colors"
+                    >
+                </div>
+                
+                <!-- Name (English) -->
+                <div>
+                    <label class="block text-sm font-medium mb-2">
+                        <span>Name (English)</span>
+                        <span class="text-red-400">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="editNameEn" 
+                        required
+                        class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-2 focus:outline-none focus:border-violet-500 transition-colors"
+                    >
+                </div>
+                
+                <!-- Group (Korean) -->
+                <div>
+                    <label class="block text-sm font-medium mb-2">
+                        <span>Group/Team (Korean)</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="editGroupKo" 
+                        class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-2 focus:outline-none focus:border-violet-500 transition-colors"
+                    >
+                </div>
+                
+                <!-- Group (English) -->
+                <div>
+                    <label class="block text-sm font-medium mb-2">
+                        <span>Group/Team (English)</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="editGroupEn" 
+                        class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-2 focus:outline-none focus:border-violet-500 transition-colors"
+                    >
+                </div>
+
+                <!-- AI Summary Button -->
+                <div class="pt-2">
+                    <button 
+                        type="button"
+                        id="editAiSummaryBtn"
+                        class="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white px-4 py-2.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 active:scale-95 transition-all shadow-lg shadow-indigo-500/20"
+                    >
+                        <i data-lucide="sparkles" class="w-4 h-4"></i>
+                        <span id="editAiBtnText">AI 요약 생성 (Gemini)</span>
+                    </button>
+                </div>
+                
+                <!-- Description (Korean) -->
+                <div>
+                    <label class="block text-sm font-medium mb-2">
+                        <span>Description (Korean)</span>
+                    </label>
+                    <textarea 
+                        id="editDescKo" 
+                        rows="3"
+                        class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-2 focus:outline-none focus:border-violet-500 transition-colors"
+                    ></textarea>
+                </div>
+                
+                <!-- Description (English) -->
+                <div>
+                    <label class="block text-sm font-medium mb-2">
+                        <span>Description (English)</span>
+                    </label>
+                    <textarea 
+                        id="editDescEn" 
+                        rows="3"
+                        class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-2 focus:outline-none focus:border-violet-500 transition-colors"
+                    ></textarea>
+                </div>
+                
+                <!-- Categories -->
+                <div>
+                    <label class="block text-sm font-medium mb-2">
+                        <span>Categories</span>
+                        <span class="text-red-400">*</span>
+                    </label>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="singer" class="edit-category-checkbox rounded text-violet-500 focus:ring-violet-500">
+                            <span>Singer</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="dancer" class="edit-category-checkbox rounded text-violet-500 focus:ring-violet-500">
+                            <span>Dancer</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="comedy" class="edit-category-checkbox rounded text-violet-500 focus:ring-violet-500">
+                            <span>Comedian</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="politics" class="edit-category-checkbox rounded text-violet-500 focus:ring-violet-500">
+                            <span>Politician</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="business" class="edit-category-checkbox rounded text-violet-500 focus:ring-violet-500">
+                            <span>Businessperson</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="ordinary" class="edit-category-checkbox rounded text-violet-500 focus:ring-violet-500">
+                            <span>Ordinary Person</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="other" class="edit-category-checkbox rounded text-violet-500 focus:ring-violet-500">
+                            <span>Other</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Submit Button -->
+                <div class="flex gap-3 pt-4">
+                    <button 
+                        type="button"
+                        id="cancelEditBtn"
+                        class="flex-1 glass-card hover:bg-slate-800/70 px-6 py-3 rounded-full font-medium active:scale-95 transition-all"
+                    >
+                        <span>Cancel</span>
+                    </button>
+                    <button 
+                        type="submit"
+                        class="flex-1 bg-violet-500 hover:bg-violet-600 text-white px-6 py-3 rounded-full font-medium active:scale-95 transition-all"
+                    >
+                        <span>Save Changes</span>
+                    </button>
+                </div>
+                
+                <!-- Admin Approve Button (Hidden by default) -->
+                <div id="editApproveContainer" class="hidden pt-2">
+                    <button 
+                        type="button"
+                        id="editApproveBtn"
+                        class="w-full bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-full font-bold active:scale-95 transition-all shadow-lg shadow-green-500/20"
+                    >
+                        Approve Star
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
     
     <!-- Star Detail Modal -->
     <div id="detailModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
@@ -671,6 +867,14 @@
                 </button>
             </div>
             
+            <!-- Admin Actions -->
+            <div id="adminActions" class="hidden mb-6 pt-6 border-t border-slate-700/50">
+                <button id="approveStarBtn" class="w-full bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-full font-bold active:scale-95 transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="check-circle" class="w-5 h-5"></i>
+                    <span>Approve Star</span>
+                </button>
+            </div>
+            
             <!-- Country Stats -->
             <div>
                 <h4 class="font-bold mb-4 flex items-center gap-2">
@@ -683,6 +887,38 @@
             </div>
         </div>
     </div>
+
+    <!-- Admin Dashboard Modal -->
+    <div id="adminDashboardModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
+        <div class="glass-card rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 animate-in">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold flex items-center gap-2">
+                    <i data-lucide="shield-check" class="text-red-500"></i>
+                    <span>Admin Dashboard</span>
+                </h3>
+                <button id="closeAdminModal" class="text-slate-400 hover:text-slate-200 transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <div class="flex justify-between items-center mb-2">
+                    <h4 class="font-bold text-slate-400 text-sm">Pending Submissions</h4>
+                    <button id="refreshAdminList" class="text-violet-400 hover:text-violet-300 text-xs flex items-center gap-1">
+                        <i data-lucide="refresh-cw" class="w-3 h-3"></i>
+                        Refresh
+                    </button>
+                </div>
+                
+                <div id="adminPendingList" class="space-y-3">
+                    <!-- Pending stars will be listed here -->
+                    <div class="text-center py-10 text-slate-500">
+                        <p>Loading submissions...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <!-- Firebase SDK -->
     <script type="module">
@@ -690,6 +926,7 @@
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
         import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, increment, updateDoc, doc, serverTimestamp, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { GoogleGenerativeAI } from 'https://esm.run/@google/generative-ai';
         
         // Firebase Configuration
         const firebaseConfig = {
@@ -701,6 +938,10 @@
             appId: "1:17498208702:web:9d40b8ca6b7a800a2621ef",
             measurementId: "G-SV6C7L3NBH"
         };
+
+        // Gemini API Configuration (Replace with your actual API Key)
+        const GEMINI_API_KEY = "YOUR_GEMINI_API_KEY_HERE";
+        const genAI = new GoogleGenerativeAI(GEMINI_API_KEY, { apiVersion: "v1" });
         
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
@@ -715,6 +956,7 @@
         let currentStarId = null;
         let currentTheme = 'light';
         let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+        let isAdmin = false;
         
         // Translation Dictionary
         const translations = {
@@ -874,6 +1116,7 @@
         // Sync User Data with Firestore
         async function syncUserData(user) {
             console.log("Syncing user data for:", user.uid);
+            isAdmin = user.email === 'jwbaek96@gmail.com';
             const userRef = doc(db, 'users', user.uid);
             try {
                 const userSnap = await getDoc(userRef);
@@ -915,7 +1158,12 @@
                     await setDoc(userRef, userData);
                     console.log("User document created successfully");
                 }
-                renderStars(allStars); // Re-render to show favorites correctly
+                
+                if (isAdmin) {
+                    await loadStars(); // Reload to include pending stars for admin
+                } else {
+                    renderStars(allStars); // Re-render to show favorites correctly
+                }
             } catch (error) {
                 console.error("Error syncing user data:", error);
                 alert("데이터 동기화 중 오류가 발생했습니다. 파이어베이스 규칙(Rules)을 확인해주세요.");
@@ -933,6 +1181,22 @@
             document.getElementById('settingsFab').addEventListener('click', openSettingsModal);
             document.getElementById('closeSettingsModal').addEventListener('click', closeSettingsModal);
             document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+            document.getElementById('adminDashboardBtn').addEventListener('click', openAdminDashboard);
+
+            // Admin Dashboard Modal
+            document.getElementById('closeAdminModal').addEventListener('click', closeAdminDashboard);
+            document.getElementById('refreshAdminList').addEventListener('click', loadAdminPendingStars);
+
+            // Edit Star Modal
+            document.getElementById('closeEditModal').addEventListener('click', closeEditModal);
+            document.getElementById('cancelEditBtn').addEventListener('click', closeEditModal);
+            document.getElementById('editStarForm').addEventListener('submit', handleEditStar);
+            document.getElementById('editAiSummaryBtn').addEventListener('click', generateEditAISummary);
+            document.getElementById('editApproveBtn').addEventListener('click', () => {
+                const starId = document.getElementById('editStarId').value;
+                handleAdminApproveFromList(starId);
+                closeEditModal();
+            });
 
             // Language Toggle
             document.getElementById('langToggle').addEventListener('click', toggleLanguage);
@@ -948,10 +1212,12 @@
             document.getElementById('closeAddModal').addEventListener('click', closeAddModal);
             document.getElementById('cancelAddBtn').addEventListener('click', closeAddModal);
             document.getElementById('addStarForm').addEventListener('submit', handleAddStar);
+            document.getElementById('aiSummaryBtn').addEventListener('click', generateAISummary);
             
             // Detail Modal
             document.getElementById('closeDetailModal').addEventListener('click', closeDetailModal);
             document.getElementById('voteBtn').addEventListener('click', () => handleVote());
+            document.getElementById('approveStarBtn').addEventListener('click', handleApproveStar);
             document.getElementById('detailFavoriteBtn').addEventListener('click', () => {
                 if (currentStarId) {
                     toggleFavorite(currentStarId);
@@ -986,6 +1252,9 @@
             });
             document.getElementById('myPageModal').addEventListener('click', (e) => {
                 if (e.target.id === 'myPageModal') closeMyPageModal();
+            });
+            document.getElementById('adminDashboardModal').addEventListener('click', (e) => {
+                if (e.target.id === 'adminDashboardModal') closeAdminDashboard();
             });
         }
         
@@ -1063,6 +1332,237 @@
 
         function closeSettingsModal() {
             document.getElementById('settingsModal').classList.add('hidden');
+        }
+
+        function openAdminDashboard() {
+            if (!isAdmin) return;
+            document.getElementById('adminDashboardModal').classList.remove('hidden');
+            loadAdminPendingStars();
+        }
+
+        function closeAdminDashboard() {
+            document.getElementById('adminDashboardModal').classList.add('hidden');
+        }
+
+        window.openEditModal = async function(starId) {
+            if (!isAdmin) return;
+            
+            try {
+                const starRef = doc(db, 'stars', starId);
+                const starSnap = await getDoc(starRef);
+                
+                if (!starSnap.exists()) {
+                    alert("Star not found.");
+                    return;
+                }
+                
+                const data = starSnap.data();
+                
+                // Fill form
+                document.getElementById('editStarId').value = starId;
+                document.getElementById('editNameKo').value = data.name?.ko || '';
+                document.getElementById('editNameEn').value = data.name?.en || '';
+                document.getElementById('editGroupKo').value = data.group?.ko || '';
+                document.getElementById('editGroupEn').value = data.group?.en || '';
+                document.getElementById('editDescKo').value = data.description?.ko || '';
+                document.getElementById('editDescEn').value = data.description?.en || '';
+                
+                // Set categories
+                const checkboxes = document.querySelectorAll('.edit-category-checkbox');
+                checkboxes.forEach(cb => {
+                    cb.checked = data.categories?.includes(cb.value);
+                });
+                
+                // Show approve button only if star is pending
+                const approveContainer = document.getElementById('editApproveContainer');
+                if (!data.is_visible) {
+                    approveContainer.classList.remove('hidden');
+                } else {
+                    approveContainer.classList.add('hidden');
+                }
+                
+                document.getElementById('editStarModal').classList.remove('hidden');
+            } catch (error) {
+                console.error("Error fetching star for edit:", error);
+                alert("Failed to load star data.");
+            }
+        }
+
+        function closeEditModal() {
+            document.getElementById('editStarModal').classList.add('hidden');
+        }
+
+        async function handleEditStar(e) {
+            e.preventDefault();
+            if (!isAdmin) return;
+
+            const starId = document.getElementById('editStarId').value;
+            const nameKo = document.getElementById('editNameKo').value.trim();
+            const nameEn = document.getElementById('editNameEn').value.trim();
+            const groupKo = document.getElementById('editGroupKo').value.trim();
+            const groupEn = document.getElementById('editGroupEn').value.trim();
+            const descKo = document.getElementById('editDescKo').value.trim();
+            const descEn = document.getElementById('editDescEn').value.trim();
+            
+            const categories = Array.from(document.querySelectorAll('.edit-category-checkbox:checked'))
+                .map(cb => cb.value);
+
+            if (categories.length === 0) {
+                alert(currentLang === 'ko' ? '카테고리를 하나 이상 선택해주세요.' : 'Please select at least one category.');
+                return;
+            }
+
+            // Create search key for duplicate checking and searching
+            const searchKey = [
+                nameKo.toLowerCase(),
+                nameEn.toLowerCase(),
+                groupKo && nameKo ? `${groupKo} ${nameKo}`.toLowerCase() : null,
+                groupEn && nameEn ? `${groupEn} ${nameEn}`.toLowerCase() : null
+            ].filter(Boolean);
+
+            try {
+                const starRef = doc(db, 'stars', starId);
+                await updateDoc(starRef, {
+                    name: { ko: nameKo, en: nameEn },
+                    group: { ko: groupKo, en: groupEn },
+                    description: { ko: descKo, en: descEn },
+                    categories: categories,
+                    search_key: searchKey,
+                    updated_at: serverTimestamp()
+                });
+
+                alert(currentLang === 'ko' ? '수정되었습니다.' : 'Updated successfully.');
+                closeEditModal();
+                loadAdminPendingStars(); // Refresh list
+                loadStars(); // Refresh main list
+            } catch (error) {
+                console.error("Detailed Error updating star:", error);
+                if (error.code === 'permission-denied') {
+                    alert(currentLang === 'ko' ? '권한이 없습니다. Firestore Rules를 확인해주세요.' : 'Permission denied. Check Firestore Rules.');
+                } else {
+                    alert(currentLang === 'ko' ? '수정 중 오류가 발생했습니다.' : 'Failed to update star.');
+                }
+            }
+        }
+
+        async function generateEditAISummary() {
+            const nameKo = document.getElementById('editNameKo').value;
+            const nameEn = document.getElementById('editNameEn').value;
+            const groupKo = document.getElementById('editGroupKo').value;
+            
+            if (!nameKo && !nameEn) {
+                alert(currentLang === 'ko' ? '이름을 먼저 입력해주세요.' : 'Please enter a name first.');
+                return;
+            }
+
+            if (GEMINI_API_KEY === "YOUR_GEMINI_API_KEY") {
+                alert(currentLang === 'ko' ? 
+                    'Gemini API 키가 설정되지 않았습니다. 코드에서 GEMINI_API_KEY를 설정해주세요.' : 
+                    'Gemini API Key is not set. Please set GEMINI_API_KEY in the code.');
+                return;
+            }
+
+            const btn = document.getElementById('editAiSummaryBtn');
+            const btnText = document.getElementById('editAiBtnText');
+            const originalText = btnText.textContent;
+            
+            try {
+                btn.disabled = true;
+                btnText.textContent = currentLang === 'ko' ? '요약 중...' : 'Summarizing...';
+
+                const prompt = `
+                    You are a helpful assistant for a fandom voting app called StarChamp.
+                    Create a brief biography (under 5 lines) for the celebrity "${nameKo} (${nameEn})" ${groupKo ? `from the group ${groupKo}` : ''}.
+                    
+                    Provide the response ONLY in JSON format with two keys: "ko" (Korean) and "en" (English).
+                    The tone should be professional and positive.
+                    Example: {"ko": "...", "en": "..."}
+                `;
+
+                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+                const result = await model.generateContent(prompt);
+                const response = await result.response;
+                let text = response.text();
+                
+                // Clean JSON response if needed
+                text = text.replace(/```json|```/g, '').trim();
+                const summary = JSON.parse(text);
+
+                if (summary.ko) document.getElementById('editDescKo').value = summary.ko;
+                if (summary.en) document.getElementById('editDescEn').value = summary.en;
+
+            } catch (error) {
+                console.error('AI Summary Error:', error);
+                alert(currentLang === 'ko' ? 'AI 요약 생성에 실패했습니다.' : 'Failed to generate AI summary.');
+            } finally {
+                btn.disabled = false;
+                btnText.textContent = originalText;
+            }
+        }
+
+        async function loadAdminPendingStars() {
+            const listContainer = document.getElementById('adminPendingList');
+            listContainer.innerHTML = `<div class="text-center py-10 text-slate-500"><p>Loading submissions...</p></div>`;
+
+            try {
+                // Removed orderBy to avoid requiring a composite index in Firestore
+                const q = query(collection(db, 'stars'), where('is_visible', '==', false));
+                const snapshot = await getDocs(q);
+                
+                if (snapshot.empty) {
+                    listContainer.innerHTML = `<div class="text-center py-10 text-slate-500"><p>No pending submissions.</p></div>`;
+                    return;
+                }
+
+                // Sort in memory to avoid index requirement
+                const sortedDocs = [...snapshot.docs].sort((a, b) => {
+                    const dateA = a.data().created_at?.toDate() || 0;
+                    const dateB = b.data().created_at?.toDate() || 0;
+                    return dateB - dateA;
+                });
+
+                listContainer.innerHTML = sortedDocs.map(doc => {
+                    const data = doc.data();
+                    const name = data.name?.ko || data.name?.en || 'Unknown';
+                    const group = data.group?.ko || data.group?.en || '';
+                    const date = data.created_at?.toDate().toLocaleDateString() || '';
+                    
+                    return `
+                        <div class="glass-card p-4 rounded-xl border border-slate-700/30 flex justify-between items-center">
+                            <div>
+                                <h5 class="font-bold text-sm">${name}</h5>
+                                <p class="text-[10px] text-slate-400">${group} · ${date}</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="handleAdminApproveFromList('${doc.id}')" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold active:scale-95 transition-all">
+                                    Approve
+                                </button>
+                                <button onclick="openEditModal('${doc.id}')" class="glass-card hover:bg-slate-700/50 px-3 py-1.5 rounded-lg text-[10px] font-bold active:scale-95 transition-all">
+                                    Edit
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                initLucideIcons();
+            } catch (error) {
+                console.error("Error loading admin list:", error);
+                listContainer.innerHTML = `<div class="text-center py-10 text-red-400"><p>Error loading list.</p></div>`;
+            }
+        }
+
+        window.handleAdminApproveFromList = async function(starId) {
+            if (!confirm('Approve this star?')) return;
+            try {
+                const starRef = doc(db, 'stars', starId);
+                await updateDoc(starRef, { is_visible: true });
+                alert('Star approved!');
+                loadAdminPendingStars();
+                loadStars(); // Refresh main list
+            } catch (error) {
+                console.error("Error approving star:", error);
+                alert('Failed to approve.');
+            }
         }
 
         function openLoginModal() {
@@ -1145,6 +1645,20 @@
                 document.getElementById('myPageUserName').textContent = user.displayName || 'User';
                 document.getElementById('myPageUserEmail').textContent = user.email || '';
                 document.getElementById('myPageUserTickets').textContent = userData ? userData.tickets : 0;
+                
+                // Show Admin Badge if applicable
+                const adminBadge = document.getElementById('adminBadge');
+                const adminDashboardBtn = document.getElementById('adminDashboardBtn');
+                const pendingFilterOption = document.getElementById('pendingFilterOption');
+                if (isAdmin) {
+                    adminBadge.classList.remove('hidden');
+                    adminDashboardBtn.classList.remove('hidden');
+                    if (pendingFilterOption) pendingFilterOption.classList.remove('hidden');
+                } else {
+                    adminBadge.classList.add('hidden');
+                    adminDashboardBtn.classList.add('hidden');
+                    if (pendingFilterOption) pendingFilterOption.classList.add('hidden');
+                }
                 
                 initLucideIcons();
             } else {
@@ -1270,11 +1784,16 @@
                 document.getElementById('loadingSpinner').classList.remove('hidden');
                 document.getElementById('rankingList').classList.add('hidden');
                 
-                // Query only visible stars to match security rules
-                const q = query(
-                    collection(db, 'stars'),
-                    where('is_visible', '==', true)
-                );
+                // Admin sees all stars, users see only visible ones
+                let q;
+                if (isAdmin) {
+                    q = query(collection(db, 'stars'));
+                } else {
+                    q = query(
+                        collection(db, 'stars'),
+                        where('is_visible', '==', true)
+                    );
+                }
                 
                 const snapshot = await getDocs(q);
                 allStars = snapshot.docs
@@ -1325,15 +1844,24 @@
                     currentRank = index + 1;
                 }
                 
+                const pendingBadge = (isAdmin && !star.is_visible) 
+                    ? `<span class="bg-amber-500/20 text-amber-400 text-[10px] px-1.5 py-0.5 rounded-full font-bold border border-amber-500/30 ml-2">PENDING</span>` 
+                    : '';
+                
                 const rankDisplay = `<div class="text-slate-500 text-lg md:text-xl font-bold w-8 md:w-12 text-center">#${currentRank}</div>`;
                 
+                // If admin and star is pending, open edit modal instead of detail modal
+                const clickHandler = (isAdmin && !star.is_visible) 
+                    ? `openEditModal('${star.id}')` 
+                    : `openDetailModal('${star.id}')`;
+
                 return `
-                    <div class="glass-card rounded-2xl p-3 md:p-1 hover:bg-slate-800/50 cursor-pointer active:scale-[0.98] transition-all hover-lift animate-in" onclick="openDetailModal('${star.id}')">
+                    <div class="glass-card rounded-2xl p-3 md:p-1 hover:bg-slate-800/50 cursor-pointer active:scale-[0.98] transition-all hover-lift animate-in" onclick="${clickHandler}">
                         <div class="flex items-center gap-2 md:gap-4">
                             ${rankDisplay}
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center gap-2 mb-0.5">
-                                    <h3 class="font-bold text-sm md:text-lg truncate">${name}</h3>
+                                    <h3 class="font-bold text-sm md:text-lg truncate">${name}${pendingBadge}</h3>
                                     <span class="text-[10px] md:text-sm font-bold gold-gradient text-transparent bg-clip-text">${votes.toLocaleString()} ${translations[currentLang].votes}</span>
                                 </div>
                                 <p class="text-[10px] md:text-sm text-slate-400 truncate">${subtitle}</p>
@@ -1372,7 +1900,14 @@
                                   groupKo.includes(searchTerm) || groupEn.includes(searchTerm);
                 
                 // Category filter
-                const categoryMatch = category === 'all' || (star.categories && star.categories.includes(category));
+                let categoryMatch = false;
+                if (category === 'all') {
+                    categoryMatch = true;
+                } else if (category === 'pending') {
+                    categoryMatch = star.is_visible === false;
+                } else {
+                    categoryMatch = star.categories && star.categories.includes(category);
+                }
                 
                 return searchMatch && categoryMatch;
             });
@@ -1430,6 +1965,14 @@
             // Render country stats
             renderCountryStats(star.votes_by_country || {}, star.votes || 0);
             
+            // Admin Actions
+            const adminActions = document.getElementById('adminActions');
+            if (isAdmin && !star.is_visible) {
+                adminActions.classList.remove('hidden');
+            } else {
+                adminActions.classList.add('hidden');
+            }
+            
             document.getElementById('detailModal').classList.remove('hidden');
             initLucideIcons();
         };
@@ -1468,6 +2011,66 @@
                     </div>
                 `;
             }).join('');
+        }
+
+        // AI Summary Generator using Gemini
+        async function generateAISummary() {
+            const nameKo = document.getElementById('nameKo').value.trim();
+            const nameEn = document.getElementById('nameEn').value.trim();
+            const groupKo = document.getElementById('groupKo').value.trim();
+            const groupEn = document.getElementById('groupEn').value.trim();
+
+            if (!nameKo && !nameEn) {
+                alert(currentLang === 'ko' ? '스타의 이름을 먼저 입력해주세요.' : 'Please enter the star\'s name first.');
+                return;
+            }
+
+            if (GEMINI_API_KEY === "YOUR_GEMINI_API_KEY") {
+                alert(currentLang === 'ko' ? 
+                    'Gemini API 키가 설정되지 않았습니다. 코드에서 GEMINI_API_KEY를 설정해주세요.' : 
+                    'Gemini API Key is not set. Please set GEMINI_API_KEY in the code.');
+                return;
+            }
+
+            const btn = document.getElementById('aiSummaryBtn');
+            const btnText = document.getElementById('aiBtnText');
+            const originalText = btnText.textContent;
+
+            try {
+                btn.disabled = true;
+                btn.classList.add('opacity-70', 'cursor-not-allowed');
+                btnText.textContent = currentLang === 'ko' ? 'AI 요약 생성 중...' : 'Generating AI Summary...';
+
+                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+                
+                const prompt = `
+                    You are a helpful assistant for a fandom voting app called StarChamp.
+                    Create a brief biography (under 5 lines) for the celebrity "${nameKo} (${nameEn})" ${groupKo ? `from the group ${groupKo}` : ''}.
+                    
+                    Provide the response ONLY in JSON format with two keys: "ko" (Korean) and "en" (English).
+                    The tone should be professional and positive.
+                    Example: {"ko": "...", "en": "..."}
+                `;
+
+                const result = await model.generateContent(prompt);
+                const response = await result.response;
+                let text = response.text();
+
+                // Clean JSON response (remove markdown code blocks if present)
+                text = text.replace(/```json|```/g, '').trim();
+                const summary = JSON.parse(text);
+
+                if (summary.ko) document.getElementById('descKo').value = summary.ko;
+                if (summary.en) document.getElementById('descEn').value = summary.en;
+
+            } catch (error) {
+                console.error('AI Summary Error:', error);
+                alert(currentLang === 'ko' ? 'AI 요약 생성 중 오류가 발생했습니다.' : 'Error generating AI summary.');
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('opacity-70', 'cursor-not-allowed');
+                btnText.textContent = originalText;
+            }
         }
         
         // Add Star Handler
@@ -1546,6 +2149,24 @@
             }
         }
         
+        // Admin Handler
+        async function handleApproveStar() {
+            if (!isAdmin || !currentStarId) return;
+            
+            try {
+                const starRef = doc(db, 'stars', currentStarId);
+                await updateDoc(starRef, {
+                    is_visible: true
+                });
+                alert(currentLang === 'ko' ? "스타가 승인되었습니다!" : "Star approved successfully!");
+                closeDetailModal();
+                await loadStars(); // Reload list to show approved star
+            } catch (error) {
+                console.error("Error approving star:", error);
+                alert(currentLang === 'ko' ? "승인 중 오류가 발생했습니다." : "Failed to approve star.");
+            }
+        }
+        
         // Vote Handler
         async function handleVote(starId = null) {
             const targetId = starId || currentStarId;
@@ -1555,6 +2176,13 @@
             }
             
             if (!targetId) return;
+
+            // Check if star is approved
+            const star = allStars.find(s => s.id === targetId);
+            if (star && star.is_visible === false) {
+                alert(currentLang === 'ko' ? '관리자 승인 전인 스타입니다.' : 'This star is pending admin approval.');
+                return;
+            }
 
             // Check tickets
             if (!userData || userData.tickets <= 0) {
