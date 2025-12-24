@@ -1038,7 +1038,7 @@
     </div>
 
     <!-- Floating Ad Mission Ticket -->
-    <div id="adMissionBtn" class="ticket-float" onclick="handleAdMission()">
+    <div id="adMissionBtn" class="ticket-float hidden" onclick="handleAdMission()">
         <div class="notification-dot"></div>
         <img src="assets/image/ticket.png" alt="Ad Mission" class="w-full h-full object-contain">
     </div>
@@ -1850,6 +1850,9 @@
                 // Show My Page FAB
                 myPageFab.classList.remove('hidden');
 
+                // Show Ad Mission Button
+                document.getElementById('adMissionBtn').classList.remove('hidden');
+
                 // Update My Page Modal Info
                 document.getElementById('myPageUserAvatar').src = user.photoURL || '';
                 document.getElementById('myPageUserName').textContent = user.displayName || 'User';
@@ -1882,6 +1885,9 @@
                 
                 // Hide My Page FAB
                 myPageFab.classList.add('hidden');
+
+                // Hide Ad Mission Button
+                document.getElementById('adMissionBtn').classList.add('hidden');
             }
         }
 
