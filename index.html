@@ -164,6 +164,11 @@
             transform: scale(0.95);
         }
 
+        /* My Page FAB Position */
+        .fab-mypage {
+            bottom: 5.5rem;
+        }
+
         /* Light Theme Overrides */
         body.light-theme {
             background: #f1f5f9;
@@ -231,10 +236,10 @@
                         </button>
                         
                         <div id="userProfile" class="hidden flex items-center gap-2">
-                            <img id="userAvatar" src="" alt="User" class="w-8 h-8 rounded-full border-2 border-violet-500">
-                            <button id="logoutBtn" class="text-slate-400 hover:text-slate-200 transition-colors">
-                                <i data-lucide="log-out" class="w-5 h-5"></i>
-                            </button>
+                            <div class="flex items-center gap-1.5 bg-violet-500/10 px-3 py-1.5 rounded-full border border-violet-500/20">
+                                <i data-lucide="ticket" class="w-4 h-4 text-violet-400"></i>
+                                <span id="headerTickets" class="text-sm font-bold text-violet-400">0</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -272,10 +277,12 @@
                     <!-- Category Filter -->
                     <select id="categoryFilter" class="bg-slate-900/50 border border-slate-700 rounded-full px-4 py-2 focus:outline-none focus:border-violet-500 transition-colors">
                         <option value="all" data-i18n="all_categories">All Categories</option>
-                        <option value="k-pop">K-POP</option>
-                        <option value="indie">Indie</option>
-                        <option value="politics" data-i18n="politics">Politics</option>
-                        <option value="comedy" data-i18n="comedy">Comedy</option>
+                        <option value="singer" data-i18n="singer">Singer</option>
+                        <option value="dancer" data-i18n="dancer">Dancer</option>
+                        <option value="comedy" data-i18n="comedy">Comedian</option>
+                        <option value="politics" data-i18n="politics">Politician</option>
+                        <option value="business" data-i18n="business">Businessperson</option>
+                        <option value="ordinary" data-i18n="ordinary">Ordinary Person</option>
                         <option value="other" data-i18n="other">Other</option>
                     </select>
                     
@@ -312,10 +319,109 @@
         
     </div>
 
-    <!-- Floating Settings Button -->
-    <button id="settingsFab" class="fab">
-        <i data-lucide="settings" class="w-6 h-6"></i>
-    </button>
+    <!-- Floating Action Buttons -->
+    <div class="fixed bottom-5 right-5 flex flex-col gap-3 z-50">
+        <button id="myPageFab" class="fab relative !static hidden">
+            <i data-lucide="user" class="w-6 h-6"></i>
+        </button>
+        <button id="settingsFab" class="fab !static">
+            <i data-lucide="settings" class="w-6 h-6"></i>
+        </button>
+    </div>
+
+    <!-- My Page Modal -->
+    <div id="myPageModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
+        <div class="glass-card rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto p-6 animate-in">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold" data-i18n="mypage">My Page</h3>
+                <button id="closeMyPageModal" class="text-slate-400 hover:text-slate-200 transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <div class="space-y-6">
+                <!-- User Profile -->
+                <div class="p-4 bg-violet-500/10 rounded-2xl border border-violet-500/20">
+                    <div class="flex items-center gap-4 mb-4">
+                        <img id="myPageUserAvatar" src="" alt="User" class="w-16 h-16 rounded-full border-2 border-violet-500">
+                        <div>
+                            <p id="myPageUserName" class="font-bold text-xl"></p>
+                            <p id="myPageUserEmail" class="text-sm text-slate-400"></p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="glass-card p-3 rounded-xl text-center">
+                            <p class="text-xs text-slate-400 mb-1" data-i18n="tickets">Tickets</p>
+                            <p id="myPageUserTickets" class="text-2xl font-bold gold-gradient text-transparent bg-clip-text">0</p>
+                        </div>
+                        <button id="myPageCheckInBtn" class="bg-violet-500 hover:bg-violet-600 text-white rounded-xl flex flex-col items-center justify-center p-2 active:scale-95 transition-all">
+                            <i data-lucide="calendar-check" class="w-6 h-6 mb-1"></i>
+                            <span class="text-xs font-bold" data-i18n="check_in">Check-in</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- My Favorites -->
+                <div>
+                    <h4 class="text-sm font-bold mb-3 flex items-center gap-2">
+                        <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-current"></i>
+                        <span data-i18n="my_favorites">My Favorites</span>
+                    </h4>
+                    <div id="myFavoritesList" class="flex gap-2 overflow-x-auto pb-2 hide-scrollbar">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+
+                <!-- My Submissions -->
+                <div>
+                    <h4 class="text-sm font-bold mb-3 flex items-center gap-2">
+                        <i data-lucide="list" class="w-4 h-4 text-violet-500"></i>
+                        <span data-i18n="my_submissions">My Submissions</span>
+                    </h4>
+                    <div id="myPageSubmissionsList" class="space-y-2 max-h-40 overflow-y-auto pr-2 custom-scrollbar">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+
+                <!-- Recent Vote History -->
+                <div>
+                    <h4 class="text-sm font-bold mb-3 flex items-center gap-2">
+                        <i data-lucide="history" class="w-4 h-4 text-violet-500"></i>
+                        <span data-i18n="vote_history">Vote History</span>
+                    </h4>
+                    <div id="voteHistoryList" class="space-y-2 max-h-40 overflow-y-auto pr-2 custom-scrollbar">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
+        <div class="glass-card rounded-2xl max-w-sm w-full p-8 animate-in text-center">
+            <div class="flex justify-end mb-2">
+                <button id="closeLoginModal" class="text-slate-400 hover:text-slate-200 transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            
+            <img src="logo/logo-removebg.png" alt="StarChamp" class="w-32 mx-auto mb-6">
+            
+            <h3 class="text-2xl font-bold mb-2" data-i18n="login">Sign In</h3>
+            <p class="text-slate-400 mb-8" data-i18n="hero_subtitle">Support your favorite stars from around the world</p>
+            
+            <button id="googleLoginBtn" class="w-full bg-white text-slate-900 hover:bg-slate-100 px-6 py-3 rounded-full font-bold flex items-center justify-center gap-3 active:scale-95 transition-all shadow-lg">
+                <svg class="w-5 h-5" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                <span data-i18n="login_google">Sign in with Google</span>
+            </button>
+        </div>
+    </div>
 
     <!-- Settings Modal -->
     <div id="settingsModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
@@ -355,9 +461,15 @@
                     <p class="text-sm text-slate-400 mb-4 leading-relaxed" data-i18n="add_star_desc">
                         We create StarChamp together with our users. If you can't find the star you're looking for, please register them!
                     </p>
-                    <button id="addStarBtn" class="w-full bg-violet-500 hover:bg-violet-600 text-white px-6 py-3 rounded-full font-medium flex items-center justify-center gap-2 active:scale-95 transition-all">
+                    <button id="addStarBtn" class="w-full bg-violet-500 hover:bg-violet-600 text-white px-6 py-3 rounded-full font-medium flex items-center justify-center gap-2 active:scale-95 transition-all mb-3">
                         <i data-lucide="plus-circle" class="w-5 h-5"></i>
                         <span data-i18n="add_star">Add New Star</span>
+                    </button>
+                    
+                    <!-- Logout Button (Visible when logged in) -->
+                    <button id="logoutBtn" class="hidden w-full glass-card hover:bg-red-500/10 text-red-400 px-6 py-3 rounded-full font-medium flex items-center justify-center gap-2 active:scale-95 transition-all border-red-500/20">
+                        <i data-lucide="log-out" class="w-5 h-5"></i>
+                        <span data-i18n="logout">Logout</span>
                     </button>
                 </div>
             </div>
@@ -465,20 +577,28 @@
                     </label>
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
                         <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" value="k-pop" class="category-checkbox rounded text-violet-500 focus:ring-violet-500">
-                            <span>K-POP</span>
+                            <input type="checkbox" value="singer" class="category-checkbox rounded text-violet-500 focus:ring-violet-500">
+                            <span data-i18n="singer">Singer</span>
                         </label>
                         <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" value="indie" class="category-checkbox rounded text-violet-500 focus:ring-violet-500">
-                            <span>Indie</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" value="politics" class="category-checkbox rounded text-violet-500 focus:ring-violet-500">
-                            <span data-i18n="politics">Politics</span>
+                            <input type="checkbox" value="dancer" class="category-checkbox rounded text-violet-500 focus:ring-violet-500">
+                            <span data-i18n="dancer">Dancer</span>
                         </label>
                         <label class="flex items-center gap-2 cursor-pointer">
                             <input type="checkbox" value="comedy" class="category-checkbox rounded text-violet-500 focus:ring-violet-500">
-                            <span data-i18n="comedy">Comedy</span>
+                            <span data-i18n="comedy">Comedian</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="politics" class="category-checkbox rounded text-violet-500 focus:ring-violet-500">
+                            <span data-i18n="politics">Politician</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="business" class="category-checkbox rounded text-violet-500 focus:ring-violet-500">
+                            <span data-i18n="business">Businessperson</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="ordinary" class="category-checkbox rounded text-violet-500 focus:ring-violet-500">
+                            <span data-i18n="ordinary">Ordinary Person</span>
                         </label>
                         <label class="flex items-center gap-2 cursor-pointer">
                             <input type="checkbox" value="other" class="category-checkbox rounded text-violet-500 focus:ring-violet-500">
@@ -557,7 +677,7 @@
         // Import Firebase modules
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-        import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, increment, updateDoc, doc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, increment, updateDoc, doc, serverTimestamp, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
         
         // Firebase Configuration
         const firebaseConfig = {
@@ -578,21 +698,27 @@
         // Global State
         let currentLang = 'ko';
         let currentUser = null;
+        let userData = null;
         let allStars = [];
         let currentStarId = null;
-        let currentTheme = 'dark';
+        let currentTheme = 'light';
+        let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
         
         // Translation Dictionary
         const translations = {
             ko: {
                 login: "로그인",
-                hero_title: "당신의 챔피언을 응원하세요",
+                hero_title: "당신의 스타을 응원하세요",
                 hero_subtitle: "전 세계 스타를 지지하고 투표하세요",
                 add_star: "스타 추가",
                 search_placeholder: "스타 검색...",
                 all_categories: "전체 카테고리",
-                politics: "정치",
-                comedy: "코미디",
+                singer: "가수",
+                dancer: "댄서",
+                comedy: "코미디언",
+                politics: "정치인",
+                business: "기업인",
+                ordinary: "일반인",
                 other: "기타",
                 sort_votes: "득표순",
                 sort_recent: "최신순",
@@ -617,17 +743,34 @@
                 language: "언어",
                 theme: "테마",
                 dark_mode: "다크",
-                light_mode: "라이트"
+                light_mode: "라이트",
+                login_google: "Google로 로그인",
+                logout: "로그아웃",
+                tickets: "투표권",
+                check_in: "출석체크",
+                check_in_success: "출석체크 완료! 투표권 3개가 지급되었습니다. 🎁",
+                already_checked_in: "오늘은 이미 출석체크를 하셨습니다.",
+                my_submissions: "내가 등록한 스타",
+                pending: "대기 중",
+                approved: "승인됨",
+                mypage: "마이페이지",
+                my_favorites: "즐겨찾는 스타",
+                vote_history: "최근 투표 내역",
+                voted_for: "에게 투표함"
             },
             en: {
                 login: "Sign In",
-                hero_title: "Vote for Your Champion",
+                hero_title: "Vote for Your Star",
                 hero_subtitle: "Support your favorite stars from around the world",
                 add_star: "Add New Star",
                 search_placeholder: "Search stars...",
                 all_categories: "All Categories",
-                politics: "Politics",
-                comedy: "Comedy",
+                singer: "Singer",
+                dancer: "Dancer",
+                comedy: "Comedian",
+                politics: "Politician",
+                business: "Businessperson",
+                ordinary: "Ordinary Person",
                 other: "Other",
                 sort_votes: "Most Votes",
                 sort_recent: "Recently Added",
@@ -652,7 +795,20 @@
                 theme: "Theme",
                 dark_mode: "Dark",
                 add_star_desc: "We create StarChamp together with our users. If you can't find the star you're looking for, please register them!",
-                light_mode: "Light"
+                light_mode: "Light",
+                login_google: "Sign in with Google",
+                logout: "Logout",
+                tickets: "Tickets",
+                check_in: "Check-in",
+                check_in_success: "Check-in complete! 3 tickets granted. 🎁",
+                already_checked_in: "You have already checked in today.",
+                my_submissions: "My Submissions",
+                pending: "Pending",
+                approved: "Approved",
+                mypage: "My Page",
+                my_favorites: "My Favorites",
+                vote_history: "Vote History",
+                voted_for: "voted for"
             }
         };
         
@@ -682,22 +838,85 @@
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme) {
                 currentTheme = savedTheme;
-                applyTheme();
             }
-
+            
+            applyTheme();
+            updateTranslations();
             setupEventListeners();
             loadStars();
             initLucideIcons();
             
             // Auth State Observer
-            onAuthStateChanged(auth, (user) => {
+            onAuthStateChanged(auth, async (user) => {
+                console.log("Auth state changed:", user ? "Logged in" : "Logged out");
                 currentUser = user;
+                if (user) {
+                    await syncUserData(user);
+                } else {
+                    userData = null;
+                }
                 updateAuthUI(user);
             });
+        }
+
+        // Sync User Data with Firestore
+        async function syncUserData(user) {
+            console.log("Syncing user data for:", user.uid);
+            const userRef = doc(db, 'users', user.uid);
+            try {
+                const userSnap = await getDoc(userRef);
+                
+                if (userSnap.exists()) {
+                    console.log("User exists in Firestore, updating...");
+                    // Update existing user
+                    const existingData = userSnap.data();
+                    userData = {
+                        ...existingData,
+                        uid: user.uid,
+                        email: user.email,
+                        displayName: user.displayName,
+                        photoURL: user.photoURL
+                    };
+                    await updateDoc(userRef, {
+                        displayName: user.displayName,
+                        photoURL: user.photoURL
+                    });
+                    
+                    // Sync favorites from DB to local
+                    if (existingData.favorites) {
+                        favorites = existingData.favorites;
+                        localStorage.setItem('favorites', JSON.stringify(favorites));
+                    }
+                } else {
+                    console.log("New user, creating Firestore document...");
+                    // Create new user
+                    userData = {
+                        uid: user.uid,
+                        email: user.email,
+                        displayName: user.displayName,
+                        photoURL: user.photoURL,
+                        tickets: 10, // Initial tickets
+                        last_check_in: serverTimestamp(),
+                        favorites: favorites, // Use current local favorites
+                        created_at: serverTimestamp()
+                    };
+                    await setDoc(userRef, userData);
+                    console.log("User document created successfully");
+                }
+                renderStars(allStars); // Re-render to show favorites correctly
+            } catch (error) {
+                console.error("Error syncing user data:", error);
+                alert("데이터 동기화 중 오류가 발생했습니다. 파이어베이스 규칙(Rules)을 확인해주세요.");
+            }
         }
         
         // Setup Event Listeners
         function setupEventListeners() {
+            // My Page Modal
+            document.getElementById('myPageFab').addEventListener('click', openMyPageModal);
+            document.getElementById('closeMyPageModal').addEventListener('click', closeMyPageModal);
+            document.getElementById('myPageCheckInBtn').addEventListener('click', handleCheckIn);
+
             // Settings Modal
             document.getElementById('settingsFab').addEventListener('click', openSettingsModal);
             document.getElementById('closeSettingsModal').addEventListener('click', closeSettingsModal);
@@ -707,7 +926,9 @@
             document.getElementById('langToggle').addEventListener('click', toggleLanguage);
             
             // Auth Buttons
-            document.getElementById('loginBtn').addEventListener('click', handleLogin);
+            document.getElementById('loginBtn').addEventListener('click', openLoginModal);
+            document.getElementById('closeLoginModal').addEventListener('click', closeLoginModal);
+            document.getElementById('googleLoginBtn').addEventListener('click', handleLogin);
             document.getElementById('logoutBtn').addEventListener('click', handleLogout);
             
             // Add Star Modal
@@ -734,6 +955,12 @@
             });
             document.getElementById('settingsModal').addEventListener('click', (e) => {
                 if (e.target.id === 'settingsModal') closeSettingsModal();
+            });
+            document.getElementById('loginModal').addEventListener('click', (e) => {
+                if (e.target.id === 'loginModal') closeLoginModal();
+            });
+            document.getElementById('myPageModal').addEventListener('click', (e) => {
+                if (e.target.id === 'myPageModal') closeMyPageModal();
             });
         }
         
@@ -790,6 +1017,21 @@
         }
 
         // Modal Functions
+        function openMyPageModal() {
+            if (!currentUser) {
+                openLoginModal();
+                return;
+            }
+            document.getElementById('myPageModal').classList.remove('hidden');
+            loadMyFavorites();
+            loadVoteHistory();
+            loadMySubmissions(currentUser.uid);
+        }
+
+        function closeMyPageModal() {
+            document.getElementById('myPageModal').classList.add('hidden');
+        }
+
         function openSettingsModal() {
             document.getElementById('settingsModal').classList.remove('hidden');
         }
@@ -797,12 +1039,21 @@
         function closeSettingsModal() {
             document.getElementById('settingsModal').classList.add('hidden');
         }
+
+        function openLoginModal() {
+            document.getElementById('loginModal').classList.remove('hidden');
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').classList.add('hidden');
+        }
         
         // Auth Functions
         async function handleLogin() {
             try {
                 const provider = new GoogleAuthProvider();
                 await signInWithPopup(auth, provider);
+                closeLoginModal();
             } catch (error) {
                 console.error('Login error:', error);
                 alert(currentLang === 'ko' ? '로그인에 실패했습니다.' : 'Login failed.');
@@ -812,21 +1063,167 @@
         async function handleLogout() {
             try {
                 await signOut(auth);
+                closeSettingsModal();
+                closeMyPageModal();
             } catch (error) {
                 console.error('Logout error:', error);
             }
         }
+
+        async function handleCheckIn() {
+            if (!currentUser || !userData) return;
+
+            const now = new Date();
+            const lastCheckIn = userData.last_check_in?.toDate?.() || new Date(0);
+            
+            // Check if already checked in today (KST or local)
+            const isSameDay = now.toDateString() === lastCheckIn.toDateString();
+            
+            if (isSameDay && userData.last_check_in) {
+                alert(translations[currentLang].already_checked_in);
+                return;
+            }
+
+            try {
+                const userRef = doc(db, 'users', currentUser.uid);
+                await updateDoc(userRef, {
+                    tickets: increment(3),
+                    last_check_in: serverTimestamp()
+                });
+                
+                userData.tickets += 3;
+                userData.last_check_in = { toDate: () => now }; // Mock for UI
+                
+                updateAuthUI(currentUser);
+                alert(translations[currentLang].check_in_success);
+            } catch (error) {
+                console.error("Check-in error:", error);
+            }
+        }
         
-        function updateAuthUI(user) {
+        async function updateAuthUI(user) {
+            const myPageFab = document.getElementById('myPageFab');
+            
             if (user) {
                 document.getElementById('loginBtn').classList.add('hidden');
                 document.getElementById('userProfile').classList.remove('hidden');
                 document.getElementById('userProfile').classList.add('flex');
-                document.getElementById('userAvatar').src = user.photoURL || '';
+                document.getElementById('headerTickets').textContent = userData ? userData.tickets : 0;
+                document.getElementById('logoutBtn').classList.remove('hidden');
+                document.getElementById('logoutBtn').classList.add('flex');
+                
+                // Show My Page FAB
+                myPageFab.classList.remove('hidden');
+
+                // Update My Page Modal Info
+                document.getElementById('myPageUserAvatar').src = user.photoURL || '';
+                document.getElementById('myPageUserName').textContent = user.displayName || 'User';
+                document.getElementById('myPageUserEmail').textContent = user.email || '';
+                document.getElementById('myPageUserTickets').textContent = userData ? userData.tickets : 0;
+                
+                initLucideIcons();
             } else {
                 document.getElementById('loginBtn').classList.remove('hidden');
                 document.getElementById('userProfile').classList.add('hidden');
                 document.getElementById('userProfile').classList.remove('flex');
+                document.getElementById('logoutBtn').classList.add('hidden');
+                document.getElementById('logoutBtn').classList.remove('flex');
+                
+                // Hide My Page FAB
+                myPageFab.classList.add('hidden');
+            }
+        }
+
+        async function loadMyFavorites() {
+            const listContainer = document.getElementById('myFavoritesList');
+            if (!favorites.length) {
+                listContainer.innerHTML = `<p class="text-xs text-slate-500 text-center py-2">No favorites yet.</p>`;
+                return;
+            }
+
+            try {
+                // Fetch favorite stars
+                const favoriteStars = allStars.filter(s => favorites.includes(s.id));
+                
+                if (favoriteStars.length === 0) {
+                    listContainer.innerHTML = `<p class="text-xs text-slate-500 text-center py-2">No favorites yet.</p>`;
+                    return;
+                }
+
+                listContainer.innerHTML = favoriteStars.map(star => {
+                    const name = star.name?.[currentLang] || star.name?.ko || 'Unknown';
+                    return `
+                        <div class="flex justify-between items-center p-2 bg-slate-800/30 rounded-lg text-xs cursor-pointer hover:bg-slate-800/50" onclick="openDetailModal('${star.id}')">
+                            <span class="font-medium truncate">${name}</span>
+                            <i data-lucide="chevron-right" class="w-3 h-3 text-slate-500"></i>
+                        </div>
+                    `;
+                }).join('');
+                initLucideIcons();
+            } catch (error) {
+                console.error("Error loading favorites:", error);
+            }
+        }
+
+        async function loadVoteHistory() {
+            const listContainer = document.getElementById('voteHistoryList');
+            if (!currentUser) return;
+
+            try {
+                const historyRef = collection(db, 'users', currentUser.uid, 'vote_history');
+                const q = query(historyRef, orderBy('timestamp', 'desc'), limit(10));
+                const snapshot = await getDocs(q);
+                
+                if (snapshot.empty) {
+                    listContainer.innerHTML = `<p class="text-xs text-slate-500 text-center py-2">No history yet.</p>`;
+                    return;
+                }
+
+                listContainer.innerHTML = snapshot.docs.map(doc => {
+                    const data = doc.data();
+                    const starName = data.star_name?.[currentLang] || data.star_name?.ko || 'Star';
+                    const date = data.timestamp?.toDate().toLocaleDateString() || '';
+                    
+                    return `
+                        <div class="flex justify-between items-center p-2 bg-slate-800/30 rounded-lg text-[10px]">
+                            <span class="text-slate-300">${date}</span>
+                            <span class="font-medium text-indigo-400">${starName}</span>
+                            <span class="text-slate-400">+${data.amount}</span>
+                        </div>
+                    `;
+                }).join('');
+            } catch (error) {
+                console.error("Error loading history:", error);
+            }
+        }
+
+        async function loadMySubmissions(uid) {
+            const listContainer = document.getElementById('mySubmissionsList');
+            try {
+                const q = query(collection(db, 'stars'), where('creator_uid', '==', uid));
+                const snapshot = await getDocs(q);
+                
+                if (snapshot.empty) {
+                    listContainer.innerHTML = `<p class="text-xs text-slate-500 text-center py-2">No submissions yet.</p>`;
+                    return;
+                }
+
+                listContainer.innerHTML = snapshot.docs.map(doc => {
+                    const data = doc.data();
+                    const name = data.name?.[currentLang] || data.name?.ko || 'Unknown';
+                    const status = data.is_visible ? 'approved' : 'pending';
+                    const statusColor = data.is_visible ? 'text-green-400' : 'text-amber-400';
+                    
+                    return `
+                        <div class="flex justify-between items-center p-2 bg-slate-800/30 rounded-lg text-xs">
+                            <span class="font-medium truncate max-w-[120px]">${name}</span>
+                            <span class="${statusColor} font-bold" data-i18n="${status}">${translations[currentLang][status]}</span>
+                        </div>
+                    `;
+                }).join('');
+                initLucideIcons();
+            } catch (error) {
+                console.error("Error loading submissions:", error);
             }
         }
         
@@ -873,34 +1270,40 @@
             container.classList.remove('hidden');
             document.getElementById('emptyState').classList.add('hidden');
             
+            let currentRank = 1;
             container.innerHTML = stars.map((star, index) => {
                 const name = star.name?.[currentLang] || star.name?.ko || 'Unknown';
                 const group = star.group?.[currentLang] || star.group?.ko || '';
                 const votes = star.votes || 0;
-                const rank = index + 1;
+                const isFavorite = favorites.includes(star.id);
                 
-                let rankBadge = '';
-                if (rank === 1) {
-                    rankBadge = '<div class="gold-gradient text-slate-900 rounded-full p-2"><i data-lucide="trophy" class="w-5 h-5"></i></div>';
-                } else if (rank === 2) {
-                    rankBadge = '<div class="bg-slate-400 text-slate-900 rounded-full p-2"><i data-lucide="medal" class="w-5 h-5"></i></div>';
-                } else if (rank === 3) {
-                    rankBadge = '<div class="bg-amber-700 text-slate-100 rounded-full p-2"><i data-lucide="award" class="w-5 h-5"></i></div>';
-                } else {
-                    rankBadge = `<div class="text-slate-500 text-xl font-bold w-10 text-center">#${rank}</div>`;
+                // Handle ties: if votes are same as previous star, use same rank
+                if (index > 0 && votes < stars[index - 1].votes) {
+                    currentRank = index + 1;
                 }
+                
+                const rankDisplay = `<div class="text-slate-500 text-xl font-bold w-12 text-center">#${currentRank}</div>`;
                 
                 return `
                     <div class="glass-card rounded-2xl p-4 hover:bg-slate-800/50 cursor-pointer active:scale-[0.98] transition-all hover-lift animate-in" onclick="openDetailModal('${star.id}')">
                         <div class="flex items-center gap-4">
-                            ${rankBadge}
+                            ${rankDisplay}
                             <div class="flex-1 min-w-0">
-                                <h3 class="font-bold text-lg truncate">${name}</h3>
+                                <div class="flex items-center gap-2 mb-0.5">
+                                    <h3 class="font-bold text-lg truncate">${name}</h3>
+                                    <span class="text-sm font-bold gold-gradient text-transparent bg-clip-text">${votes.toLocaleString()} ${translations[currentLang].votes}</span>
+                                </div>
                                 ${group ? `<p class="text-sm text-slate-400 truncate">${group}</p>` : ''}
                             </div>
-                            <div class="text-right">
-                                <p class="text-2xl font-bold text-transparent bg-clip-text gold-gradient">${votes.toLocaleString()}</p>
-                                <p class="text-xs text-slate-400">${translations[currentLang].votes}</p>
+                            <div class="flex items-center gap-1">
+                                <!-- Quick Vote Button -->
+                                <button onclick="event.stopPropagation(); handleQuickVote('${star.id}')" class="bg-violet-500 hover:bg-violet-600 text-white p-2 rounded-full active:scale-90 transition-all shadow-lg shadow-violet-500/20">
+                                    <i data-lucide="heart" class="w-5 h-5 fill-current"></i>
+                                </button>
+                                <!-- Favorite Button -->
+                                <button onclick="event.stopPropagation(); toggleFavorite('${star.id}')" class="p-2 hover:bg-slate-700/50 rounded-full transition-colors group">
+                                    <i data-lucide="star" class="w-5 h-5 ${isFavorite ? 'fill-yellow-400 text-yellow-400' : 'text-slate-400 group-hover:text-yellow-400'}"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -1049,17 +1452,14 @@
             ].filter(Boolean);
             
             try {
-                // Check for duplicates
-                const q = query(collection(db, 'stars'));
+                // Check for duplicates using array-contains-any (more efficient)
+                const q = query(
+                    collection(db, 'stars'),
+                    where('search_key', 'array-contains-any', searchKey)
+                );
                 const snapshot = await getDocs(q);
                 
-                const isDuplicate = snapshot.docs.some(doc => {
-                    const data = doc.data();
-                    const existingKeys = data.search_key || [];
-                    return searchKey.some(key => existingKeys.includes(key));
-                });
-                
-                if (isDuplicate) {
+                if (!snapshot.empty) {
                     alert(currentLang === 'ko' ? 
                         '이미 등록된 스타입니다.' : 
                         'This star has already been registered.');
@@ -1089,36 +1489,60 @@
             } catch (error) {
                 console.error('Error adding star:', error);
                 alert(currentLang === 'ko' ? 
-                    '등록 중 오류가 발생했습니다.' : 
-                    'An error occurred during submission.');
+                    `등록 중 오류가 발생했습니다: ${error.message}` : 
+                    `An error occurred: ${error.message}`);
             }
         }
         
         // Vote Handler
-        async function handleVote() {
+        async function handleVote(starId = null) {
+            const targetId = starId || currentStarId;
             if (!currentUser) {
-                alert(currentLang === 'ko' ? '로그인이 필요합니다.' : 'Please sign in first.');
+                openLoginModal();
                 return;
             }
             
-            if (!currentStarId) return;
+            if (!targetId) return;
+
+            // Check tickets
+            if (!userData || userData.tickets <= 0) {
+                alert(currentLang === 'ko' ? '투표권이 부족합니다.' : 'Not enough tickets.');
+                return;
+            }
             
             try {
                 // Get user's country from IP
                 const countryCode = await getUserCountry();
                 
-                // Update Firestore
-                const starRef = doc(db, 'stars', currentStarId);
+                // 1. Update Star Votes
+                const starRef = doc(db, 'stars', targetId);
                 await updateDoc(starRef, {
                     votes: increment(1),
                     [`votes_by_country.${countryCode}`]: increment(1)
+                });
+
+                // 2. Update User Tickets
+                const userRef = doc(db, 'users', currentUser.uid);
+                await updateDoc(userRef, {
+                    tickets: increment(-1)
+                });
+                userData.tickets -= 1;
+
+                // 3. Record Vote History
+                const historyRef = collection(db, 'users', currentUser.uid, 'vote_history');
+                await addDoc(historyRef, {
+                    star_id: targetId,
+                    star_name: allStars.find(s => s.id === targetId)?.name || {},
+                    voted_at: serverTimestamp(),
+                    country: countryCode
                 });
                 
                 alert(currentLang === 'ko' ? '투표가 완료되었습니다! 🎉' : 'Vote counted! 🎉');
                 
                 // Reload data
+                updateAuthUI(currentUser);
                 await loadStars();
-                closeDetailModal();
+                if (!starId) closeDetailModal();
                 
             } catch (error) {
                 console.error('Error voting:', error);
@@ -1126,6 +1550,36 @@
                     '투표 중 오류가 발생했습니다.' : 
                     'An error occurred while voting.');
             }
+        }
+
+        // Favorite Handler
+        async function toggleFavorite(starId) {
+            const index = favorites.indexOf(starId);
+            if (index === -1) {
+                favorites.push(starId);
+            } else {
+                favorites.splice(index, 1);
+            }
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            
+            // Sync with Firestore if logged in
+            if (currentUser) {
+                try {
+                    const userRef = doc(db, 'users', currentUser.uid);
+                    await updateDoc(userRef, {
+                        favorites: favorites
+                    });
+                } catch (error) {
+                    console.error("Error updating favorites in DB:", error);
+                }
+            }
+            
+            renderStars(allStars);
+        }
+
+        // Quick Vote Handler
+        function handleQuickVote(starId) {
+            handleVote(starId);
         }
         
         // Get User Country from IP
@@ -1152,6 +1606,8 @@
         
         // Make functions globally accessible
         window.openDetailModal = openDetailModal;
+        window.toggleFavorite = toggleFavorite;
+        window.handleQuickVote = handleQuickVote;
     </script>
 </body>
 </html>
