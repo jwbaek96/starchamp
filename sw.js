@@ -1,10 +1,10 @@
 const CACHE_NAME = 'starchamp-v1';
 const ASSETS_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/logo/logo.jpg',
-  '/assets/image/ticket.png',
+  './',
+  './index.html',
+  './manifest.json',
+  './logo/logo.jpg',
+  './assets/image/ticket.png',
   'https://cdn.tailwindcss.com',
   'https://unpkg.com/lucide@latest'
 ];

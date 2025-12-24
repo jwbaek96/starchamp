@@ -24,6 +24,9 @@
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/jpeg" href="logo/logo.jpg">
     <link rel="apple-touch-icon" href="logo/logo.jpg">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="StarChamp">
     
     <title>⭐ StarChamp - Global Fandom Voting</title>
     
@@ -349,13 +352,14 @@
                         <select id="categoryFilter" class="w-full bg-slate-900/50 border border-slate-700 rounded-full px-4 py-1.5 md:py-2 text-sm md:text-base focus:outline-none focus:border-violet-500 transition-colors">
                             <option value="all" data-i18n="all_categories">All Categories</option>
                             <option value="singer" data-i18n="singer">Singer</option>
+                            <option value="actor" data-i18n="actor">Actor/Celebrity</option>
                             <option value="dancer" data-i18n="dancer">Dancer</option>
                             <option value="comedy" data-i18n="comedy">Comedian</option>
                             <option value="politics" data-i18n="politics">Politician</option>
                             <option value="business" data-i18n="business">Businessperson</option>
                             <option value="ordinary" data-i18n="ordinary">Ordinary Person</option>
                             <option value="other" data-i18n="other">Other</option>
-                            <option id="pendingFilterOption" value="pending" class="hidden" data-i18n="pending">Pending</option>
+                            <option id="pendingFilterOption" value="pending" data-i18n="pending">Pending</option>
                         </select>
                         
                         <!-- Sort -->
@@ -678,6 +682,10 @@
                             <span data-i18n="singer">Singer</span>
                         </label>
                         <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="actor" class="category-checkbox rounded text-violet-500 focus:ring-violet-500">
+                            <span data-i18n="actor">Actor/Celebrity</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
                             <input type="checkbox" value="dancer" class="category-checkbox rounded text-violet-500 focus:ring-violet-500">
                             <span data-i18n="dancer">Dancer</span>
                         </label>
@@ -846,6 +854,10 @@
                         <label class="flex items-center gap-2 cursor-pointer">
                             <input type="checkbox" value="singer" class="edit-category-checkbox rounded text-violet-500 focus:ring-violet-500">
                             <span>Singer</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="actor" class="edit-category-checkbox rounded text-violet-500 focus:ring-violet-500">
+                            <span>Actor/Celebrity</span>
                         </label>
                         <label class="flex items-center gap-2 cursor-pointer">
                             <input type="checkbox" value="dancer" class="edit-category-checkbox rounded text-violet-500 focus:ring-violet-500">
@@ -1034,12 +1046,12 @@
         const db = getFirestore(app);
         
         // Global State
-        let currentLang = 'ko';
+        let currentLang = 'en';
         let currentUser = null;
         let userData = null;
         let allStars = [];
         let currentStarId = null;
-        let currentTheme = 'light';
+        let currentTheme = 'dark';
         let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
         let isAdmin = false;
         let unsubscribeStars = null;
@@ -1054,6 +1066,8 @@
                 search_placeholder: "스타 검색...",
                 all_categories: "전체 카테고리",
                 singer: "가수",
+                actor: "배우",
+                celebrity: "연예인",
                 dancer: "댄서",
                 comedy: "코미디언",
                 politics: "정치인",
@@ -1110,6 +1124,8 @@
                 search_placeholder: "Search stars...",
                 all_categories: "All Categories",
                 singer: "Singer",
+                celebrity: "Celebrity",
+                actor: "Actor",
                 dancer: "Dancer",
                 comedy: "Comedian",
                 politics: "Politician",
@@ -1186,6 +1202,12 @@
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme) {
                 currentTheme = savedTheme;
+            }
+
+            const savedLang = localStorage.getItem('lang');
+            if (savedLang) {
+                currentLang = savedLang;
+                document.getElementById('langText').textContent = currentLang.toUpperCase();
             }
             
             applyTheme();
@@ -1369,6 +1391,7 @@
         // Language Functions
         function toggleLanguage() {
             currentLang = currentLang === 'ko' ? 'en' : 'ko';
+            localStorage.setItem('lang', currentLang);
             document.getElementById('langText').textContent = currentLang.toUpperCase();
             updateTranslations();
             renderStars(allStars);
@@ -1716,12 +1739,10 @@
 
                 if (isAdmin) {
                     adminBadge.classList.remove('hidden');
-                    if (pendingFilterOption) pendingFilterOption.classList.remove('hidden');
                     if (aiSummaryBtnContainer) aiSummaryBtnContainer.classList.remove('hidden');
                     if (editAiSummaryBtnContainer) editAiSummaryBtnContainer.classList.remove('hidden');
                 } else {
                     adminBadge.classList.add('hidden');
-                    if (pendingFilterOption) pendingFilterOption.classList.add('hidden');
                     if (aiSummaryBtnContainer) aiSummaryBtnContainer.classList.add('hidden');
                     if (editAiSummaryBtnContainer) editAiSummaryBtnContainer.classList.add('hidden');
                 }
@@ -1929,12 +1950,24 @@
                 const subtitle = group ? `${group} · ${categoryList}` : categoryList;
                 
                 const starRank = rankMap[star.id];
+                let rankText = `#${starRank}`;
+                let rankClass = "text-slate-500";
+                let rankStyle = "";
+
+                if (votes === 0) {
+                    rankText = "#-";
+                } else if (starRank <= 3) {
+                    rankClass = "gold-gradient text-transparent bg-clip-text";
+                    if (starRank === 1) {
+                        rankStyle = "filter: drop-shadow(0 0 10px rgba(254, 254, 105, 0.899));";
+                    }
+                }
                 
                 const pendingBadge = (isAdmin && !star.is_visible) 
                     ? `<span class="bg-amber-500/20 text-amber-400 text-[10px] px-1.5 py-0.5 rounded-full font-bold border border-amber-500/30 ml-2">PENDING</span>` 
                     : '';
                 
-                const rankDisplay = `<div class="text-slate-500 text-lg md:text-xl font-bold w-8 md:w-12 text-center">#${starRank}</div>`;
+                const rankDisplay = `<div class="${rankClass} text-lg md:text-xl font-bold w-8 md:w-12 text-center" style="${rankStyle}">${rankText}</div>`;
                 
                 // If admin and star is pending, open edit modal instead of detail modal
                 const clickHandler = (isAdmin && !star.is_visible) 
@@ -2451,7 +2484,7 @@
         function registerServiceWorker() {
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('/sw.js')
+                    navigator.serviceWorker.register('./sw.js')
                         .then(reg => console.log('Service Worker registered!', reg))
                         .catch(err => console.log('Service Worker registration failed: ', err));
                 });

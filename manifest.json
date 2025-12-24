@@ -2,8 +2,10 @@
   "name": "StarChamp",
   "short_name": "StarChamp",
   "description": "Vote for your favorite stars from around the world",
-  "start_url": "/",
+  "start_url": "./index.html",
+  "scope": ".",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
   "icons": [
