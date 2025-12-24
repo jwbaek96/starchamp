@@ -7,8 +7,9 @@
     <meta name="theme-color" content="#0f172a">
     
     <!-- PWA Settings -->
-    <link rel="manifest" href="data:application/manifest+json;base64,ewogICJuYW1lIjogIlN0YXJDaGFtcCIsCiAgInNob3J0X25hbWUiOiAiU3RhckNoYW1wIiwKICAic3RhcnRfdXJsIjogIi8iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwZjE3MmEiLAogICJ0aGVtZV9jb2xvciI6ICIjMGYxNzJhIiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAibG9nby9sb2dvLnBuZyIsCiAgICAgICJzaXplcyI6ICI1MTJ4NTEyIiwKICAgICAgInR5cGUiOiAiaW1hZ2UvcG5nIgogICAgfQogIF0KfQ==">
-    <link rel="icon" type="image/png" href="logo/logo-removebg.png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/jpeg" href="logo/logo.jpg">
+    <link rel="apple-touch-icon" href="logo/logo.jpg">
     
     <title>⭐ StarChamp - Global Fandom Voting</title>
     
@@ -107,6 +108,9 @@
         .logo-glow {
             filter: drop-shadow(0 0 10px rgba(254, 254, 105, 0.899));
         }
+        .logo-glow2 {
+            filter: drop-shadow(0 0 5px rgba(254, 255, 245, 0.899));
+        }
         
         /* Loading Spinner */
         .spinner {
@@ -180,7 +184,7 @@
         }
 
         body.light-theme .fab {
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.099);
             border: 1px solid rgba(15, 23, 42, 0.1);
         }
 
@@ -221,6 +225,48 @@
             margin-top: 7px !important;
             margin-bottom: calc(1rem * var(--tw-space-y-reverse));
         }
+
+        /* Floating Ticket Animation */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        .ticket-float {
+            position: fixed;
+            bottom: 9rem;
+            right: 0.75rem;
+            z-index: 49;
+            width: 4rem;
+            height: 4rem;
+            cursor: pointer;
+            animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.3));
+            transition: all 0.3s ease;
+        }
+
+        .notification-dot {
+            position: absolute;
+            top: 0.85rem;
+            right: 0.75rem;
+            width: 0.5rem;
+            height: 0.5rem;
+            background-color: #ef4444;
+            border-radius: 9999px;
+            border: 1px solid #1e293b;
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.8);
+            z-index: 50;
+        }
+
+        .ticket-float:hover {
+            transform: scale(1.1) !important;
+            filter: drop-shadow(0 15px 20px rgba(139, 92, 246, 0.4));
+        }
+
+        .ticket-float:active {
+            transform: scale(0.9) !important;
+        }
     </style>
 </head>
 <body class="min-h-screen">
@@ -233,7 +279,7 @@
             <div class="max-w-6xl mx-auto px-2 md:px-4 py-4 flex items-center justify-between">
                 <!-- Logo -->
                 <div class="flex items-center gap-2">
-                    <img src="logo/logo-removebg.png" alt="StarChamp Logo" class="w-20 h-10 object-contain">
+                    <img src="logo/logo-removebg.png" alt="StarChamp Logo" class="w-20 h-10 object-contain logo-glow">
                 </div>
                 
                 <!-- Actions -->
@@ -302,6 +348,7 @@
                         <select id="sortFilter" class="w-full bg-slate-900/50 border border-slate-700 rounded-full px-4 py-1.5 md:py-2 text-sm md:text-base focus:outline-none focus:border-violet-500 transition-colors">
                             <option value="votes" data-i18n="sort_votes">Most Votes</option>
                             <option value="recent" data-i18n="sort_recent">Recently Added</option>
+                            <option value="name" data-i18n="sort_name">Alphabetical</option>
                         </select>
                     </div>
                 </div>
@@ -422,7 +469,7 @@
                 </button>
             </div>
             
-            <img src="logo/logo-removebg.png" alt="StarChamp" class="w-32 mx-auto mb-6">
+            <img src="logo/logo-removebg.png" alt="StarChamp" class="w-32 mx-auto mb-6 logo-glow2">
             
             <h3 class="text-xl md:text-2xl font-bold mb-2" data-i18n="login">Sign In</h3>
             <p class="text-xs md:text-sm text-slate-400 mb-8" data-i18n="hero_subtitle">Support your favorite stars from around the world</p>
@@ -474,12 +521,6 @@
 
                 <!-- Add Star Section -->
                 <div class="pt-4 border-t border-slate-700/50">
-                    <!-- Admin Dashboard Button (Visible only to admin) -->
-                    <button id="adminDashboardBtn" class="hidden w-full bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-full font-bold flex items-center justify-center gap-2 active:scale-95 transition-all mb-3">
-                        <i data-lucide="shield-check" class="w-5 h-5"></i>
-                        <span>Admin Dashboard</span>
-                    </button>
-
                     <p class="text-sm text-slate-400 mb-4 leading-relaxed" data-i18n="add_star_desc">
                         We create StarChamp together with our users. If you can't find the star you're looking for, please register them!
                     </p>
@@ -566,7 +607,7 @@
                 </div>
 
                 <!-- AI Summary Button -->
-                <div class="pt-2">
+                <div id="aiSummaryBtnContainer" class="pt-2 hidden">
                     <button 
                         type="button"
                         id="aiSummaryBtn"
@@ -578,29 +619,37 @@
                 </div>
                 
                 <!-- Description (Korean) -->
-                <div>
+                <div class="relative">
                     <label class="block text-sm font-medium mb-2">
                         <span data-i18n="desc_ko">Description (Korean)</span>
                     </label>
                     <textarea 
                         id="descKo" 
                         rows="3"
+                        maxlength="500"
                         class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-2 focus:outline-none focus:border-violet-500 transition-colors"
                         placeholder="간단한 소개를 입력하세요"
                     ></textarea>
+                    <div class="text-[10px] text-slate-500 text-right mt-1">
+                        <span id="descKoCount">0</span>/500
+                    </div>
                 </div>
                 
                 <!-- Description (English) -->
-                <div>
+                <div class="relative">
                     <label class="block text-sm font-medium mb-2">
                         <span data-i18n="desc_en">Description (English)</span>
                     </label>
                     <textarea 
                         id="descEn" 
                         rows="3"
+                        maxlength="500"
                         class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-2 focus:outline-none focus:border-violet-500 transition-colors"
                         placeholder="Enter a brief description"
                     ></textarea>
+                    <div class="text-[10px] text-slate-500 text-right mt-1">
+                        <span id="descEnCount">0</span>/500
+                    </div>
                 </div>
                 
                 <!-- Categories -->
@@ -730,7 +779,7 @@
                 </div>
 
                 <!-- AI Summary Button -->
-                <div class="pt-2">
+                <div id="editAiSummaryBtnContainer" class="pt-2 hidden">
                     <button 
                         type="button"
                         id="editAiSummaryBtn"
@@ -742,27 +791,35 @@
                 </div>
                 
                 <!-- Description (Korean) -->
-                <div>
+                <div class="relative">
                     <label class="block text-sm font-medium mb-2">
                         <span>Description (Korean)</span>
                     </label>
                     <textarea 
                         id="editDescKo" 
                         rows="3"
+                        maxlength="500"
                         class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-2 focus:outline-none focus:border-violet-500 transition-colors"
                     ></textarea>
+                    <div class="text-[10px] text-slate-500 text-right mt-1">
+                        <span id="editDescKoCount">0</span>/500
+                    </div>
                 </div>
                 
                 <!-- Description (English) -->
-                <div>
+                <div class="relative">
                     <label class="block text-sm font-medium mb-2">
                         <span>Description (English)</span>
                     </label>
                     <textarea 
                         id="editDescEn" 
                         rows="3"
+                        maxlength="500"
                         class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-2 focus:outline-none focus:border-violet-500 transition-colors"
                     ></textarea>
+                    <div class="text-[10px] text-slate-500 text-right mt-1">
+                        <span id="editDescEnCount">0</span>/500
+                    </div>
                 </div>
                 
                 <!-- Categories -->
@@ -889,37 +946,43 @@
     </div>
 
     <!-- Admin Dashboard Modal -->
-    <div id="adminDashboardModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
-        <div class="glass-card rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 animate-in">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-2xl font-bold flex items-center gap-2">
-                    <i data-lucide="shield-check" class="text-red-500"></i>
-                    <span>Admin Dashboard</span>
-                </h3>
-                <button id="closeAdminModal" class="text-slate-400 hover:text-slate-200 transition-colors">
+    <!-- Star Detail Modal -->
+    
+    <!-- Ad Mission Modal -->
+    <div id="adMissionModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
+        <div class="bg-white rounded-[2.5rem] max-w-sm w-full p-8 animate-in text-center relative overflow-hidden shadow-2xl">
+            <!-- Background Decorative Text -->
+            <!-- <div class="absolute top-6 left-0 right-0 opacity-[0.08] pointer-events-none select-none">
+                <span class="text-5xl font-serif italic text-amber-700 whitespace-nowrap">Vote for Your Star!</span>
+            </div> -->
+
+            <div class="flex justify-end absolute top-6 right-6 z-10">
+                <button id="closeAdMissionModal" class="text-slate-400 hover:text-slate-600 transition-colors">
                     <i data-lucide="x" class="w-6 h-6"></i>
                 </button>
             </div>
-
-            <div class="space-y-4">
-                <div class="flex justify-between items-center mb-2">
-                    <h4 class="font-bold text-slate-400 text-sm">Pending Submissions</h4>
-                    <button id="refreshAdminList" class="text-violet-400 hover:text-violet-300 text-xs flex items-center gap-1">
-                        <i data-lucide="refresh-cw" class="w-3 h-3"></i>
-                        Refresh
-                    </button>
+            
+            <div class="mt-10 mb-6 relative z-10">
+                <div class="w-26 h-26 flex items-center justify-center mx-auto mb-6">
+                    <img src="assets/image/ticket.png" alt="Ticket" class="w-25 h-25 object-contain">
                 </div>
-                
-                <div id="adminPendingList" class="space-y-3">
-                    <!-- Pending stars will be listed here -->
-                    <div class="text-center py-10 text-slate-500">
-                        <p>Loading submissions...</p>
-                    </div>
-                </div>
+                <h3 class="text-2xl font-bold mb-3 text-slate-900" data-i18n="ad_mission_title">무료 투표권 받기!</h3>
+                <p class="text-slate-500 text-base leading-relaxed px-2" data-i18n="ad_mission_desc" style="word-break: keep-all;">짧은 광고를 시청하면 투표권 3개를 무료로 드립니다.</p>
             </div>
+            
+            <button id="watchAdBtn" class="w-full bg-[#8b5cf6] hover:bg-[#7c3aed] text-white px-6 py-6 rounded-[2rem] font-bold text-xl active:scale-95 transition-all flex flex-row items-center justify-center gap-2 shadow-lg shadow-violet-200">
+                <i data-lucide="tv" class="w-8 h-8"></i>
+                <span data-i18n="watch_ad">광고 보고 투표권 받기</span>
+            </button>
         </div>
     </div>
-    
+
+    <!-- Floating Ad Mission Ticket -->
+    <div id="adMissionBtn" class="ticket-float" onclick="handleAdMission()">
+        <div class="notification-dot"></div>
+        <img src="assets/image/ticket.png" alt="Ad Mission" class="w-full h-full object-contain">
+    </div>
+
     <!-- Firebase SDK -->
     <script type="module">
         // Import Firebase modules
@@ -976,6 +1039,7 @@
                 other: "기타",
                 sort_votes: "득표순",
                 sort_recent: "최신순",
+                sort_name: "이름순",
                 no_results: "결과가 없습니다",
                 name_ko: "이름 (한국어)",
                 name_en: "이름 (영어)",
@@ -989,7 +1053,7 @@
                 add_star_desc: "스타챔프는 유저와 함께 만들어가는 공간입니다. 찾는 스타가 없다면 직접 등록하여 응원해보세요!",
                 approval_notice: "관리자 승인 후 표시됩니다",
                 total_votes: "총 득표수",
-                vote_now: "지금 투표하기",
+                vote_now: "투표하기",
                 votes_by_country: "국가별 득표 현황",
                 votes: "표",
                 rank: "순위",
@@ -1010,7 +1074,10 @@
                 mypage: "마이페이지",
                 my_favorites: "즐겨찾는 스타",
                 vote_history: "전체 투표 내역",
-                voted_for: "에게 투표함"
+                voted_for: "에게 투표함",
+                ad_mission_title: "무료 투표권 받기!",
+                ad_mission_desc: "짧은 광고를 시청하면 투표권 3개를 무료로 드립니다.",
+                watch_ad: "PLAY"
             },
             en: {
                 login: "Sign In",
@@ -1028,6 +1095,7 @@
                 other: "Other",
                 sort_votes: "Most Votes",
                 sort_recent: "Recently Added",
+                sort_name: "Alphabetical",
                 no_results: "No stars found",
                 name_ko: "Name (Korean)",
                 name_en: "Name (English)",
@@ -1062,7 +1130,10 @@
                 mypage: "My Page",
                 my_favorites: "My Favorites",
                 vote_history: "Vote History",
-                voted_for: "voted for"
+                voted_for: "voted for",
+                ad_mission_title: "Get Free Tickets!",
+                ad_mission_desc: "Watch a short video ad and get 3 free voting tickets.",
+                watch_ad: "PLAY"
             }
         };
         
@@ -1099,6 +1170,7 @@
             setupEventListeners();
             loadStars();
             initLucideIcons();
+            registerServiceWorker();
             
             // Auth State Observer
             onAuthStateChanged(auth, async (user) => {
@@ -1181,11 +1253,6 @@
             document.getElementById('settingsFab').addEventListener('click', openSettingsModal);
             document.getElementById('closeSettingsModal').addEventListener('click', closeSettingsModal);
             document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-            document.getElementById('adminDashboardBtn').addEventListener('click', openAdminDashboard);
-
-            // Admin Dashboard Modal
-            document.getElementById('closeAdminModal').addEventListener('click', closeAdminDashboard);
-            document.getElementById('refreshAdminList').addEventListener('click', loadAdminPendingStars);
 
             // Edit Star Modal
             document.getElementById('closeEditModal').addEventListener('click', closeEditModal);
@@ -1214,6 +1281,20 @@
             document.getElementById('addStarForm').addEventListener('submit', handleAddStar);
             document.getElementById('aiSummaryBtn').addEventListener('click', generateAISummary);
             
+            // Character Count Listeners
+            const updateCharCount = (textareaId, countId) => {
+                const textarea = document.getElementById(textareaId);
+                const count = document.getElementById(countId);
+                if (textarea && count) {
+                    count.textContent = textarea.value.length;
+                }
+            };
+
+            document.getElementById('descKo').addEventListener('input', () => updateCharCount('descKo', 'descKoCount'));
+            document.getElementById('descEn').addEventListener('input', () => updateCharCount('descEn', 'descEnCount'));
+            document.getElementById('editDescKo').addEventListener('input', () => updateCharCount('editDescKo', 'editDescKoCount'));
+            document.getElementById('editDescEn').addEventListener('input', () => updateCharCount('editDescEn', 'editDescEnCount'));
+
             // Detail Modal
             document.getElementById('closeDetailModal').addEventListener('click', closeDetailModal);
             document.getElementById('voteBtn').addEventListener('click', () => handleVote());
@@ -1253,9 +1334,13 @@
             document.getElementById('myPageModal').addEventListener('click', (e) => {
                 if (e.target.id === 'myPageModal') closeMyPageModal();
             });
-            document.getElementById('adminDashboardModal').addEventListener('click', (e) => {
-                if (e.target.id === 'adminDashboardModal') closeAdminDashboard();
+            document.getElementById('adMissionModal').addEventListener('click', (e) => {
+                if (e.target.id === 'adMissionModal') closeAdMissionModal();
             });
+
+            // Ad Mission Modal
+            document.getElementById('closeAdMissionModal').addEventListener('click', closeAdMissionModal);
+            document.getElementById('watchAdBtn').addEventListener('click', handleWatchAd);
         }
         
         // Language Functions
@@ -1334,16 +1419,6 @@
             document.getElementById('settingsModal').classList.add('hidden');
         }
 
-        function openAdminDashboard() {
-            if (!isAdmin) return;
-            document.getElementById('adminDashboardModal').classList.remove('hidden');
-            loadAdminPendingStars();
-        }
-
-        function closeAdminDashboard() {
-            document.getElementById('adminDashboardModal').classList.add('hidden');
-        }
-
         window.openEditModal = async function(starId) {
             if (!isAdmin) return;
             
@@ -1367,6 +1442,10 @@
                 document.getElementById('editDescKo').value = data.description?.ko || '';
                 document.getElementById('editDescEn').value = data.description?.en || '';
                 
+                // Update character counts
+                document.getElementById('editDescKoCount').textContent = (data.description?.ko || '').length;
+                document.getElementById('editDescEnCount').textContent = (data.description?.en || '').length;
+
                 // Set categories
                 const checkboxes = document.querySelectorAll('.edit-category-checkbox');
                 checkboxes.forEach(cb => {
@@ -1433,7 +1512,6 @@
 
                 alert(currentLang === 'ko' ? '수정되었습니다.' : 'Updated successfully.');
                 closeEditModal();
-                loadAdminPendingStars(); // Refresh list
                 loadStars(); // Refresh main list
             } catch (error) {
                 console.error("Detailed Error updating star:", error);
@@ -1488,8 +1566,14 @@
                 text = text.replace(/```json|```/g, '').trim();
                 const summary = JSON.parse(text);
 
-                if (summary.ko) document.getElementById('editDescKo').value = summary.ko;
-                if (summary.en) document.getElementById('editDescEn').value = summary.en;
+                if (summary.ko) {
+                    document.getElementById('editDescKo').value = summary.ko;
+                    document.getElementById('editDescKoCount').textContent = summary.ko.length;
+                }
+                if (summary.en) {
+                    document.getElementById('editDescEn').value = summary.en;
+                    document.getElementById('editDescEnCount').textContent = summary.en.length;
+                }
 
             } catch (error) {
                 console.error('AI Summary Error:', error);
@@ -1500,64 +1584,12 @@
             }
         }
 
-        async function loadAdminPendingStars() {
-            const listContainer = document.getElementById('adminPendingList');
-            listContainer.innerHTML = `<div class="text-center py-10 text-slate-500"><p>Loading submissions...</p></div>`;
-
-            try {
-                // Removed orderBy to avoid requiring a composite index in Firestore
-                const q = query(collection(db, 'stars'), where('is_visible', '==', false));
-                const snapshot = await getDocs(q);
-                
-                if (snapshot.empty) {
-                    listContainer.innerHTML = `<div class="text-center py-10 text-slate-500"><p>No pending submissions.</p></div>`;
-                    return;
-                }
-
-                // Sort in memory to avoid index requirement
-                const sortedDocs = [...snapshot.docs].sort((a, b) => {
-                    const dateA = a.data().created_at?.toDate() || 0;
-                    const dateB = b.data().created_at?.toDate() || 0;
-                    return dateB - dateA;
-                });
-
-                listContainer.innerHTML = sortedDocs.map(doc => {
-                    const data = doc.data();
-                    const name = data.name?.ko || data.name?.en || 'Unknown';
-                    const group = data.group?.ko || data.group?.en || '';
-                    const date = data.created_at?.toDate().toLocaleDateString() || '';
-                    
-                    return `
-                        <div class="glass-card p-4 rounded-xl border border-slate-700/30 flex justify-between items-center">
-                            <div>
-                                <h5 class="font-bold text-sm">${name}</h5>
-                                <p class="text-[10px] text-slate-400">${group} · ${date}</p>
-                            </div>
-                            <div class="flex gap-2">
-                                <button onclick="handleAdminApproveFromList('${doc.id}')" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold active:scale-95 transition-all">
-                                    Approve
-                                </button>
-                                <button onclick="openEditModal('${doc.id}')" class="glass-card hover:bg-slate-700/50 px-3 py-1.5 rounded-lg text-[10px] font-bold active:scale-95 transition-all">
-                                    Edit
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-                initLucideIcons();
-            } catch (error) {
-                console.error("Error loading admin list:", error);
-                listContainer.innerHTML = `<div class="text-center py-10 text-red-400"><p>Error loading list.</p></div>`;
-            }
-        }
-
         window.handleAdminApproveFromList = async function(starId) {
             if (!confirm('Approve this star?')) return;
             try {
                 const starRef = doc(db, 'stars', starId);
                 await updateDoc(starRef, { is_visible: true });
                 alert('Star approved!');
-                loadAdminPendingStars();
                 loadStars(); // Refresh main list
             } catch (error) {
                 console.error("Error approving star:", error);
@@ -1648,16 +1680,20 @@
                 
                 // Show Admin Badge if applicable
                 const adminBadge = document.getElementById('adminBadge');
-                const adminDashboardBtn = document.getElementById('adminDashboardBtn');
                 const pendingFilterOption = document.getElementById('pendingFilterOption');
+                const aiSummaryBtnContainer = document.getElementById('aiSummaryBtnContainer');
+                const editAiSummaryBtnContainer = document.getElementById('editAiSummaryBtnContainer');
+
                 if (isAdmin) {
                     adminBadge.classList.remove('hidden');
-                    adminDashboardBtn.classList.remove('hidden');
                     if (pendingFilterOption) pendingFilterOption.classList.remove('hidden');
+                    if (aiSummaryBtnContainer) aiSummaryBtnContainer.classList.remove('hidden');
+                    if (editAiSummaryBtnContainer) editAiSummaryBtnContainer.classList.remove('hidden');
                 } else {
                     adminBadge.classList.add('hidden');
-                    adminDashboardBtn.classList.add('hidden');
                     if (pendingFilterOption) pendingFilterOption.classList.add('hidden');
+                    if (aiSummaryBtnContainer) aiSummaryBtnContainer.classList.add('hidden');
+                    if (editAiSummaryBtnContainer) editAiSummaryBtnContainer.classList.add('hidden');
                 }
                 
                 initLucideIcons();
@@ -1826,7 +1862,17 @@
             container.classList.remove('hidden');
             document.getElementById('emptyState').classList.add('hidden');
             
-            let currentRank = 1;
+            // Pre-calculate ranks based on votes to ensure rank is always vote-based
+            const voteSorted = [...stars].sort((a, b) => (b.votes || 0) - (a.votes || 0));
+            const rankMap = {};
+            let tempRank = 1;
+            voteSorted.forEach((s, i) => {
+                if (i > 0 && (s.votes || 0) < (voteSorted[i-1].votes || 0)) {
+                    tempRank = i + 1;
+                }
+                rankMap[s.id] = tempRank;
+            });
+
             container.innerHTML = stars.map((star, index) => {
                 const name = star.name?.[currentLang] || star.name?.ko || 'Unknown';
                 const group = star.group?.[currentLang] || star.group?.ko || '';
@@ -1839,16 +1885,13 @@
                     .join(', ');
                 const subtitle = group ? `${group} · ${categoryList}` : categoryList;
                 
-                // Handle ties: if votes are same as previous star, use same rank
-                if (index > 0 && votes < stars[index - 1].votes) {
-                    currentRank = index + 1;
-                }
+                const starRank = rankMap[star.id];
                 
                 const pendingBadge = (isAdmin && !star.is_visible) 
                     ? `<span class="bg-amber-500/20 text-amber-400 text-[10px] px-1.5 py-0.5 rounded-full font-bold border border-amber-500/30 ml-2">PENDING</span>` 
                     : '';
                 
-                const rankDisplay = `<div class="text-slate-500 text-lg md:text-xl font-bold w-8 md:w-12 text-center">#${currentRank}</div>`;
+                const rankDisplay = `<div class="text-slate-500 text-lg md:text-xl font-bold w-8 md:w-12 text-center">#${starRank}</div>`;
                 
                 // If admin and star is pending, open edit modal instead of detail modal
                 const clickHandler = (isAdmin && !star.is_visible) 
@@ -1921,6 +1964,12 @@
                     const bTime = b.created_at?.toMillis?.() || 0;
                     return bTime - aTime;
                 });
+            } else if (sortBy === 'name') {
+                filtered.sort((a, b) => {
+                    const nameA = (a.name?.[currentLang] || a.name?.ko || '').toLowerCase();
+                    const nameB = (b.name?.[currentLang] || b.name?.ko || '').toLowerCase();
+                    return nameA.localeCompare(nameB, currentLang === 'ko' ? 'ko' : 'en');
+                });
             }
             
             renderStars(filtered);
@@ -1939,6 +1988,8 @@
         function closeAddModal() {
             document.getElementById('addStarModal').classList.add('hidden');
             document.getElementById('addStarForm').reset();
+            document.getElementById('descKoCount').textContent = '0';
+            document.getElementById('descEnCount').textContent = '0';
         }
         
         window.openDetailModal = async function(starId) {
@@ -2060,8 +2111,14 @@
                 text = text.replace(/```json|```/g, '').trim();
                 const summary = JSON.parse(text);
 
-                if (summary.ko) document.getElementById('descKo').value = summary.ko;
-                if (summary.en) document.getElementById('descEn').value = summary.en;
+                if (summary.ko) {
+                    document.getElementById('descKo').value = summary.ko;
+                    document.getElementById('descKoCount').textContent = summary.ko.length;
+                }
+                if (summary.en) {
+                    document.getElementById('descEn').value = summary.en;
+                    document.getElementById('descEnCount').textContent = summary.en.length;
+                }
 
             } catch (error) {
                 console.error('AI Summary Error:', error);
@@ -2261,6 +2318,58 @@
         function handleQuickVote(starId) {
             handleVote(starId);
         }
+
+        // Ad Mission Handler
+        window.handleAdMission = function() {
+            if (!currentUser) {
+                alert(currentLang === 'ko' ? '로그인이 필요합니다.' : 'Please sign in first.');
+                return;
+            }
+            document.getElementById('adMissionModal').classList.remove('hidden');
+        }
+
+        function closeAdMissionModal() {
+            document.getElementById('adMissionModal').classList.add('hidden');
+        }
+
+        async function handleWatchAd() {
+            const btn = document.getElementById('watchAdBtn');
+            const originalText = btn.innerHTML;
+            
+            try {
+                btn.disabled = true;
+                btn.innerHTML = `<div class="spinner"></div>`;
+                
+                // AdMob Rewarded Ad Integration Placeholder
+                console.log("AdMob Rewarded Ad requested...");
+                
+                // Simulate ad watching (3 seconds)
+                await new Promise(resolve => setTimeout(resolve, 3000));
+                
+                // Reward the user
+                const userRef = doc(db, 'users', currentUser.uid);
+                await updateDoc(userRef, {
+                    tickets: increment(3)
+                });
+                
+                userData.tickets += 3;
+                updateAuthUI(currentUser);
+                
+                alert(currentLang === 'ko' ? 
+                    '광고 시청 완료! 투표권 3개가 지급되었습니다. 🎁' : 
+                    'Ad watched! 3 tickets granted. 🎁');
+                
+                closeAdMissionModal();
+            } catch (error) {
+                console.error("Error during ad mission:", error);
+                alert(currentLang === 'ko' ? 
+                    '광고 시청 중 오류가 발생했습니다.' : 
+                    'An error occurred while watching the ad.');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        }
         
         // Get User Country from IP
         async function getUserCountry() {
@@ -2278,6 +2387,17 @@
         function initLucideIcons() {
             if (window.lucide) {
                 lucide.createIcons();
+            }
+        }
+
+        // PWA Service Worker Registration
+        function registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/sw.js')
+                        .then(reg => console.log('Service Worker registered!', reg))
+                        .catch(err => console.log('Service Worker registration failed: ', err));
+                });
             }
         }
         
