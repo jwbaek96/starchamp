@@ -3,7 +3,8 @@ const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './manifest.json',
-  './logo/logo.jpg',
+  './logo/logo%20192.png',
+  './logo/logo%20512.png',
   './assets/image/ticket.png',
   'https://cdn.tailwindcss.com',
   'https://unpkg.com/lucide@latest'

@@ -12,19 +12,19 @@
   "categories": ["entertainment", "social"],
   "icons": [
     {
-      "src": "logo/logo.png",
+      "src": "logo/logo%20192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "logo/logo.png",
+      "src": "logo/logo%20512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "logo/logo.png",
+      "src": "logo/logo%20512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -32,14 +32,14 @@
   ],
   "screenshots": [
     {
-      "src": "logo/logo.png",
+      "src": "logo/logo%20512.png",
       "sizes": "512x512",
       "type": "image/png",
       "form_factor": "wide",
       "label": "StarChamp Desktop"
     },
     {
-      "src": "logo/logo.png",
+      "src": "logo/logo%20512.png",
       "sizes": "512x512",
       "type": "image/png",
       "form_factor": "narrow",
