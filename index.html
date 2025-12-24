@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Vote for your favorite stars from around the world">
+    <meta name="theme-color" content="#0f172a">
+    
+    <!-- PWA Settings -->
+    <link rel="manifest" href="data:application/manifest+json;base64,ewogICJuYW1lIjogIlN0YXJDaGFtcCIsCiAgInNob3J0X25hbWUiOiAiU3RhckNoYW1wIiwKICAic3RhcnRfdXJsIjogIi8iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwZjE3MmEiLAogICJ0aGVtZV9jb2xvciI6ICIjMGYxNzJhIiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAibG9nby9sb2dvLnBuZyIsCiAgICAgICJzaXplcyI6ICI1MTJ4NTEyIiwKICAgICAgInR5cGUiOiAiaW1hZ2UvcG5nIgogICAgfQogIF0KfQ==">
+    <link rel="icon" type="image/png" href="logo/logo-removebg.png">
+    
+    <title>⭐ StarChamp - Global Fandom Voting</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #0f172a;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+        
+        /* Glassmorphism Effect */
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+        
+        /* Gold Gradient */
+        .gold-gradient {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        }
+        
+        /* Smooth Animations */
+        .animate-in {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(30, 41, 59, 0.5);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #8b5cf6;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #7c3aed;
+        }
+        
+        /* Modal Backdrop */
+        .modal-backdrop {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+        }
+        
+        /* Country Flag Emojis */
+        .flag {
+            font-size: 1.5rem;
+        }
+        
+        /* Hover Effects */
+        .hover-lift {
+            transition: transform 0.2s ease;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-2px);
+        }
+        
+        /* Vote Button Glow */
+        .vote-glow {
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+        }
+        
+        /* Loading Spinner */
+        .spinner {
+            border: 3px solid rgba(139, 92, 246, 0.3);
+            border-top-color: #8b5cf6;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Country Stats Bar */
+        .country-bar {
+            transition: width 0.5s ease;
+            background: linear-gradient(90deg, #8b5cf6 0%, #6d28d9 100%);
+        }
+        
+        /* Hide scrollbar but keep functionality */
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 1.25rem;
+            right: 1.25rem;
+            z-index: 50;
+            width: 3.5rem;
+            height: 3.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: #8b5cf6;
+        }
+
+        .fab:hover {
+            transform: scale(1.1) rotate(45deg);
+            background: rgba(30, 41, 59, 0.9);
+        }
+
+        .fab:active {
+            transform: scale(0.95);
+        }
+
+        /* Light Theme Overrides */
+        body.light-theme {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        body.light-theme .fab {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(15, 23, 42, 0.1);
+        }
+
+        body.light-theme .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(15, 23, 42, 0.1);
+        }
+
+        body.light-theme header {
+            border-bottom-color: rgba(15, 23, 42, 0.1);
+        }
+
+        body.light-theme .text-slate-400 {
+            color: #64748b;
+        }
+
+        body.light-theme .text-slate-300 {
+            color: #334155;
+        }
+
+        body.light-theme .bg-slate-900\/50 {
+            background: rgba(241, 245, 249, 0.8);
+            border-color: #cbd5e1;
+            color: #0f172a;
+        }
+
+        body.light-theme select, body.light-theme input, body.light-theme textarea {
+            background: #ffffff;
+            border-color: #cbd5e1;
+            color: #0f172a;
+        }
+
+        body.light-theme .modal-backdrop {
+            background: rgba(0, 0, 0, 0.4);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    
+    <!-- Main Container -->
+    <div id="app" class="min-h-screen">
+        
+        <!-- Header -->
+        <header class="glass-card border-b border-slate-700/50 sticky top-0 z-40">
+            <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+                <!-- Logo -->
+                <div class="flex items-center gap-2">
+                    <img src="logo/logo-removebg.png" alt="StarChamp Logo" class="w-20 h-10 object-contain">
+                </div>
+                
+                <!-- Actions -->
+                <div class="flex items-center gap-3">
+                    <!-- User Profile / Login -->
+                    <div id="authContainer">
+                        <button id="loginBtn" class="bg-violet-500 hover:bg-violet-600 text-white px-4 py-2 rounded-full text-sm font-medium active:scale-95 transition-all">
+                            <span data-i18n="login">Sign In</span>
+                        </button>
+                        
+                        <div id="userProfile" class="hidden flex items-center gap-2">
+                            <img id="userAvatar" src="" alt="User" class="w-8 h-8 rounded-full border-2 border-violet-500">
+                            <button id="logoutBtn" class="text-slate-400 hover:text-slate-200 transition-colors">
+                                <i data-lucide="log-out" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Main Content -->
+        <main class="max-w-6xl mx-auto px-4 py-8">
+            
+            <!-- Hero Section -->
+            <section class="text-center mb-12 animate-in">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4 tracking-tight">
+                    <span data-i18n="hero_title">Vote for Your Champion</span>
+                </h2>
+                <p class="text-slate-400 text-lg mb-8">
+                    <span data-i18n="hero_subtitle">Support your favorite stars from around the world</span>
+                </p>
+            </section>
+            
+            <!-- Search & Filter -->
+            <section class="mb-8">
+                <div class="glass-card rounded-2xl p-4 flex flex-col md:flex-row gap-4">
+                    <!-- Search Bar -->
+                    <div class="flex-1 relative">
+                        <i data-lucide="search" class="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input 
+                            type="text" 
+                            id="searchInput" 
+                            placeholder="Search stars..."
+                            data-i18n-placeholder="search_placeholder"
+                            class="w-full bg-slate-900/50 border border-slate-700 rounded-full pl-10 pr-4 py-2 focus:outline-none focus:border-violet-500 transition-colors"
+                        >
+                    </div>
+                    
+                    <!-- Category Filter -->
+                    <select id="categoryFilter" class="bg-slate-900/50 border border-slate-700 rounded-full px-4 py-2 focus:outline-none focus:border-violet-500 transition-colors">
+                        <option value="all" data-i18n="all_categories">All Categories</option>
+                        <option value="k-pop">K-POP</option>
+                        <option value="indie">Indie</option>
+                        <option value="politics" data-i18n="politics">Politics</option>
+                        <option value="comedy" data-i18n="comedy">Comedy</option>
+                        <option value="other" data-i18n="other">Other</option>
+                    </select>
+                    
+                    <!-- Sort -->
+                    <select id="sortFilter" class="bg-slate-900/50 border border-slate-700 rounded-full px-4 py-2 focus:outline-none focus:border-violet-500 transition-colors">
+                        <option value="votes" data-i18n="sort_votes">Most Votes</option>
+                        <option value="recent" data-i18n="sort_recent">Recently Added</option>
+                    </select>
+                </div>
+            </section>
+            
+            <!-- Ranking List -->
+            <section>
+                <div id="loadingSpinner" class="flex justify-center items-center py-20">
+                    <div class="spinner"></div>
+                </div>
+                
+                <div id="rankingList" class="hidden space-y-4">
+                    <!-- Dynamic content will be inserted here -->
+                </div>
+                
+                <div id="emptyState" class="hidden text-center py-20">
+                    <i data-lucide="inbox" class="w-16 h-16 mx-auto text-slate-600 mb-4"></i>
+                    <p class="text-slate-400" data-i18n="no_results">No Stars found</p>
+                </div>
+            </section>
+            
+        </main>
+        
+        <!-- Footer -->
+        <footer class="text-center py-8 text-slate-500 text-sm">
+            <p>&copy; 2025 StarChamp. Made with 💜 for global fandoms.</p>
+        </footer>
+        
+    </div>
+
+    <!-- Floating Settings Button -->
+    <button id="settingsFab" class="fab">
+        <i data-lucide="settings" class="w-6 h-6"></i>
+    </button>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
+        <div class="glass-card rounded-2xl max-w-sm w-full p-6 animate-in">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold" data-i18n="settings">Settings</h3>
+                <button id="closeSettingsModal" class="text-slate-400 hover:text-slate-200 transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Language Setting -->
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="languages" class="w-5 h-5 text-violet-500"></i>
+                        <span class="font-medium" data-i18n="language">Language</span>
+                    </div>
+                    <button id="langToggle" class="glass-card px-4 py-2 rounded-full text-sm font-bold hover:bg-slate-800/50 active:scale-95 transition-all">
+                        <span id="langText">EN</span>
+                    </button>
+                </div>
+
+                <!-- Theme Setting -->
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="sun" id="themeIcon" class="w-5 h-5 text-violet-500"></i>
+                        <span class="font-medium" data-i18n="theme">Theme</span>
+                    </div>
+                    <button id="themeToggle" class="glass-card px-4 py-2 rounded-full text-sm font-bold hover:bg-slate-800/50 active:scale-95 transition-all">
+                        <span id="themeText" data-i18n="dark_mode">Dark</span>
+                    </button>
+                </div>
+
+                <!-- Add Star Section -->
+                <div class="pt-4 border-t border-slate-700/50">
+                    <p class="text-sm text-slate-400 mb-4 leading-relaxed" data-i18n="add_star_desc">
+                        We create StarChamp together with our users. If you can't find the star you're looking for, please register them!
+                    </p>
+                    <button id="addStarBtn" class="w-full bg-violet-500 hover:bg-violet-600 text-white px-6 py-3 rounded-full font-medium flex items-center justify-center gap-2 active:scale-95 transition-all">
+                        <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                        <span data-i18n="add_star">Add New Star</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add Star Modal -->
+    <div id="addStarModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
+        <div class="glass-card rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 animate-in">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold" data-i18n="add_star">Add New Star</h3>
+                <button id="closeAddModal" class="text-slate-400 hover:text-slate-200 transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            
+            <form id="addStarForm" class="space-y-4">
+                <!-- Name (Korean) -->
+                <div>
+                    <label class="block text-sm font-medium mb-2">
+                        <span data-i18n="name_ko">Name (Korean)</span>
+                        <span class="text-red-400">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="nameKo" 
+                        required
+                        class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-2 focus:outline-none focus:border-violet-500 transition-colors"
+                        placeholder="예: 아이유"
+                    >
+                </div>
+                
+                <!-- Name (English) -->
+                <div>
+                    <label class="block text-sm font-medium mb-2">
+                        <span data-i18n="name_en">Name (English)</span>
+                        <span class="text-red-400">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="nameEn" 
+                        required
+                        class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-2 focus:outline-none focus:border-violet-500 transition-colors"
+                        placeholder="e.g., IU"
+                    >
+                </div>
+                
+                <!-- Group (Korean) -->
+                <div>
+                    <label class="block text-sm font-medium mb-2">
+                        <span data-i18n="group_ko">Group/Team (Korean)</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="groupKo" 
+                        class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-2 focus:outline-none focus:border-violet-500 transition-colors"
+                        placeholder="예: 빅히트 엔터테인먼트"
+                    >
+                </div>
+                
+                <!-- Group (English) -->
+                <div>
+                    <label class="block text-sm font-medium mb-2">
+                        <span data-i18n="group_en">Group/Team (English)</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="groupEn" 
+                        class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-2 focus:outline-none focus:border-violet-500 transition-colors"
+                        placeholder="e.g., BigHit Entertainment"
+                    >
+                </div>
+                
+                <!-- Description (Korean) -->
+                <div>
+                    <label class="block text-sm font-medium mb-2">
+                        <span data-i18n="desc_ko">Description (Korean)</span>
+                    </label>
+                    <textarea 
+                        id="descKo" 
+                        rows="3"
+                        class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-2 focus:outline-none focus:border-violet-500 transition-colors"
+                        placeholder="간단한 소개를 입력하세요"
+                    ></textarea>
+                </div>
+                
+                <!-- Description (English) -->
+                <div>
+                    <label class="block text-sm font-medium mb-2">
+                        <span data-i18n="desc_en">Description (English)</span>
+                    </label>
+                    <textarea 
+                        id="descEn" 
+                        rows="3"
+                        class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-2 focus:outline-none focus:border-violet-500 transition-colors"
+                        placeholder="Enter a brief description"
+                    ></textarea>
+                </div>
+                
+                <!-- Categories -->
+                <div>
+                    <label class="block text-sm font-medium mb-2">
+                        <span data-i18n="categories">Categories</span>
+                        <span class="text-red-400">*</span>
+                    </label>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="k-pop" class="category-checkbox rounded text-violet-500 focus:ring-violet-500">
+                            <span>K-POP</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="indie" class="category-checkbox rounded text-violet-500 focus:ring-violet-500">
+                            <span>Indie</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="politics" class="category-checkbox rounded text-violet-500 focus:ring-violet-500">
+                            <span data-i18n="politics">Politics</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="comedy" class="category-checkbox rounded text-violet-500 focus:ring-violet-500">
+                            <span data-i18n="comedy">Comedy</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="other" class="category-checkbox rounded text-violet-500 focus:ring-violet-500">
+                            <span data-i18n="other">Other</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Submit Button -->
+                <div class="flex gap-3 pt-4">
+                    <button 
+                        type="button"
+                        id="cancelAddBtn"
+                        class="flex-1 glass-card hover:bg-slate-800/70 px-6 py-3 rounded-full font-medium active:scale-95 transition-all"
+                    >
+                        <span data-i18n="cancel">Cancel</span>
+                    </button>
+                    <button 
+                        type="submit"
+                        class="flex-1 bg-violet-500 hover:bg-violet-600 text-white px-6 py-3 rounded-full font-medium active:scale-95 transition-all"
+                    >
+                        <span data-i18n="submit">Submit</span>
+                    </button>
+                </div>
+                
+                <p class="text-sm text-slate-400 text-center">
+                    <span data-i18n="approval_notice">Your submission will be visible after admin approval</span>
+                </p>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Star Detail Modal -->
+    <div id="detailModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
+        <div class="glass-card rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 animate-in">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold" id="detailName">Star Name</h3>
+                <button id="closeDetailModal" class="text-slate-400 hover:text-slate-200 transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            
+            <!-- Star Info -->
+            <div class="mb-6">
+                <p class="text-slate-400 mb-2" id="detailGroup"></p>
+                <p class="text-slate-300" id="detailDescription"></p>
+            </div>
+            
+            <!-- Total Votes -->
+            <div class="glass-card rounded-xl p-4 mb-6 text-center">
+                <p class="text-slate-400 text-sm mb-1" data-i18n="total_votes">Total Votes</p>
+                <p class="text-4xl font-bold gold-gradient text-transparent bg-clip-text" id="detailTotalVotes">0</p>
+            </div>
+            
+            <!-- Vote Button -->
+            <button id="voteBtn" class="w-full bg-violet-500 hover:bg-violet-600 text-white vote-glow px-6 py-4 rounded-full font-bold text-lg active:scale-95 transition-all mb-6 flex items-center justify-center gap-2">
+                <i data-lucide="heart" class="w-6 h-6"></i>
+                <span data-i18n="vote_now">Vote Now</span>
+            </button>
+            
+            <!-- Country Stats -->
+            <div>
+                <h4 class="font-bold mb-4 flex items-center gap-2">
+                    <i data-lucide="globe" class="w-5 h-5"></i>
+                    <span data-i18n="votes_by_country">Votes by Country</span>
+                </h4>
+                <div id="countryStats" class="space-y-3">
+                    <!-- Dynamic country stats will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, increment, updateDoc, doc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAitPX120P9qm-zcb0G__7HOaRolk7Nv6I",
+            authDomain: "starchamp-41abe.firebaseapp.com",
+            projectId: "starchamp-41abe",
+            storageBucket: "starchamp-41abe.firebasestorage.app",
+            messagingSenderId: "17498208702",
+            appId: "1:17498208702:web:9d40b8ca6b7a800a2621ef",
+            measurementId: "G-SV6C7L3NBH"
+        };
+        
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        // Global State
+        let currentLang = 'ko';
+        let currentUser = null;
+        let allStars = [];
+        let currentStarId = null;
+        let currentTheme = 'dark';
+        
+        // Translation Dictionary
+        const translations = {
+            ko: {
+                login: "로그인",
+                hero_title: "당신의 챔피언을 응원하세요",
+                hero_subtitle: "전 세계 스타를 지지하고 투표하세요",
+                add_star: "스타 추가",
+                search_placeholder: "스타 검색...",
+                all_categories: "전체 카테고리",
+                politics: "정치",
+                comedy: "코미디",
+                other: "기타",
+                sort_votes: "득표순",
+                sort_recent: "최신순",
+                no_results: "결과가 없습니다",
+                name_ko: "이름 (한국어)",
+                name_en: "이름 (영어)",
+                group_ko: "그룹/소속 (한국어)",
+                group_en: "그룹/소속 (영어)",
+                desc_ko: "설명 (한국어)",
+                desc_en: "설명 (영어)",
+                categories: "카테고리",
+                cancel: "취소",
+                submit: "제출",
+                add_star_desc: "스타챔프는 유저와 함께 만들어가는 공간입니다. 찾는 스타가 없다면 직접 등록하여 응원해보세요!",
+                approval_notice: "관리자 승인 후 표시됩니다",
+                total_votes: "총 득표수",
+                vote_now: "지금 투표하기",
+                votes_by_country: "국가별 득표 현황",
+                votes: "표",
+                rank: "순위",
+                settings: "설정",
+                language: "언어",
+                theme: "테마",
+                dark_mode: "다크",
+                light_mode: "라이트"
+            },
+            en: {
+                login: "Sign In",
+                hero_title: "Vote for Your Champion",
+                hero_subtitle: "Support your favorite stars from around the world",
+                add_star: "Add New Star",
+                search_placeholder: "Search stars...",
+                all_categories: "All Categories",
+                politics: "Politics",
+                comedy: "Comedy",
+                other: "Other",
+                sort_votes: "Most Votes",
+                sort_recent: "Recently Added",
+                no_results: "No stars found",
+                name_ko: "Name (Korean)",
+                name_en: "Name (English)",
+                group_ko: "Group/Team (Korean)",
+                group_en: "Group/Team (English)",
+                desc_ko: "Description (Korean)",
+                desc_en: "Description (English)",
+                categories: "Categories",
+                cancel: "Cancel",
+                submit: "Submit",
+                approval_notice: "Your submission will be visible after admin approval",
+                total_votes: "Total Votes",
+                vote_now: "Vote Now",
+                votes_by_country: "Votes by Country",
+                votes: "votes",
+                rank: "Rank",
+                settings: "Settings",
+                language: "Language",
+                theme: "Theme",
+                dark_mode: "Dark",
+                add_star_desc: "We create StarChamp together with our users. If you can't find the star you're looking for, please register them!",
+                light_mode: "Light"
+            }
+        };
+        
+        // Country Name Mapping
+        const countryNames = {
+            KR: { ko: "🇰🇷 대한민국", en: "🇰🇷 South Korea" },
+            US: { ko: "🇺🇸 미국", en: "🇺🇸 United States" },
+            JP: { ko: "🇯🇵 일본", en: "🇯🇵 Japan" },
+            CN: { ko: "🇨🇳 중국", en: "🇨🇳 China" },
+            GB: { ko: "🇬🇧 영국", en: "🇬🇧 United Kingdom" },
+            DE: { ko: "🇩🇪 독일", en: "🇩🇪 Germany" },
+            FR: { ko: "🇫🇷 프랑스", en: "🇫🇷 France" },
+            TH: { ko: "🇹🇭 태국", en: "🇹🇭 Thailand" },
+            VN: { ko: "🇻🇳 베트남", en: "🇻🇳 Vietnam" },
+            PH: { ko: "🇵🇭 필리핀", en: "🇵🇭 Philippines" },
+            ID: { ko: "🇮🇩 인도네시아", en: "🇮🇩 Indonesia" },
+            BR: { ko: "🇧🇷 브라질", en: "🇧🇷 Brazil" },
+            MX: { ko: "🇲🇽 멕시코", en: "🇲🇽 Mexico" },
+            CA: { ko: "🇨🇦 캐나다", en: "🇨🇦 Canada" },
+            AU: { ko: "🇦🇺 호주", en: "🇦🇺 Australia" },
+            IN: { ko: "🇮🇳 인도", en: "🇮🇳 India" }
+        };
+        
+        // Initialize
+        function init() {
+            // Load saved settings
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                currentTheme = savedTheme;
+                applyTheme();
+            }
+
+            setupEventListeners();
+            loadStars();
+            initLucideIcons();
+            
+            // Auth State Observer
+            onAuthStateChanged(auth, (user) => {
+                currentUser = user;
+                updateAuthUI(user);
+            });
+        }
+        
+        // Setup Event Listeners
+        function setupEventListeners() {
+            // Settings Modal
+            document.getElementById('settingsFab').addEventListener('click', openSettingsModal);
+            document.getElementById('closeSettingsModal').addEventListener('click', closeSettingsModal);
+            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+
+            // Language Toggle
+            document.getElementById('langToggle').addEventListener('click', toggleLanguage);
+            
+            // Auth Buttons
+            document.getElementById('loginBtn').addEventListener('click', handleLogin);
+            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+            
+            // Add Star Modal
+            document.getElementById('addStarBtn').addEventListener('click', openAddModal);
+            document.getElementById('closeAddModal').addEventListener('click', closeAddModal);
+            document.getElementById('cancelAddBtn').addEventListener('click', closeAddModal);
+            document.getElementById('addStarForm').addEventListener('submit', handleAddStar);
+            
+            // Detail Modal
+            document.getElementById('closeDetailModal').addEventListener('click', closeDetailModal);
+            document.getElementById('voteBtn').addEventListener('click', handleVote);
+            
+            // Search & Filter
+            document.getElementById('searchInput').addEventListener('input', filterStars);
+            document.getElementById('categoryFilter').addEventListener('change', filterStars);
+            document.getElementById('sortFilter').addEventListener('change', filterStars);
+            
+            // Close modals on backdrop click
+            document.getElementById('addStarModal').addEventListener('click', (e) => {
+                if (e.target.id === 'addStarModal') closeAddModal();
+            });
+            document.getElementById('detailModal').addEventListener('click', (e) => {
+                if (e.target.id === 'detailModal') closeDetailModal();
+            });
+            document.getElementById('settingsModal').addEventListener('click', (e) => {
+                if (e.target.id === 'settingsModal') closeSettingsModal();
+            });
+        }
+        
+        // Language Functions
+        function toggleLanguage() {
+            currentLang = currentLang === 'ko' ? 'en' : 'ko';
+            document.getElementById('langText').textContent = currentLang.toUpperCase();
+            updateTranslations();
+            renderStars(allStars);
+        }
+        
+        function updateTranslations() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[currentLang][key]) {
+                    el.textContent = translations[currentLang][key];
+                }
+            });
+            
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (translations[currentLang][key]) {
+                    el.placeholder = translations[currentLang][key];
+                }
+            });
+
+            // Update theme text specifically
+            document.getElementById('themeText').textContent = 
+                currentTheme === 'dark' ? translations[currentLang].dark_mode : translations[currentLang].light_mode;
+        }
+
+        // Theme Functions
+        function toggleTheme() {
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            applyTheme();
+            localStorage.setItem('theme', currentTheme);
+        }
+
+        function applyTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('themeIcon');
+            const themeText = document.getElementById('themeText');
+
+            if (currentTheme === 'light') {
+                body.classList.add('light-theme');
+                themeIcon.setAttribute('data-lucide', 'moon');
+                themeText.textContent = translations[currentLang].light_mode;
+            } else {
+                body.classList.remove('light-theme');
+                themeIcon.setAttribute('data-lucide', 'sun');
+                themeText.textContent = translations[currentLang].dark_mode;
+            }
+            initLucideIcons();
+        }
+
+        // Modal Functions
+        function openSettingsModal() {
+            document.getElementById('settingsModal').classList.remove('hidden');
+        }
+
+        function closeSettingsModal() {
+            document.getElementById('settingsModal').classList.add('hidden');
+        }
+        
+        // Auth Functions
+        async function handleLogin() {
+            try {
+                const provider = new GoogleAuthProvider();
+                await signInWithPopup(auth, provider);
+            } catch (error) {
+                console.error('Login error:', error);
+                alert(currentLang === 'ko' ? '로그인에 실패했습니다.' : 'Login failed.');
+            }
+        }
+        
+        async function handleLogout() {
+            try {
+                await signOut(auth);
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        }
+        
+        function updateAuthUI(user) {
+            if (user) {
+                document.getElementById('loginBtn').classList.add('hidden');
+                document.getElementById('userProfile').classList.remove('hidden');
+                document.getElementById('userProfile').classList.add('flex');
+                document.getElementById('userAvatar').src = user.photoURL || '';
+            } else {
+                document.getElementById('loginBtn').classList.remove('hidden');
+                document.getElementById('userProfile').classList.add('hidden');
+                document.getElementById('userProfile').classList.remove('flex');
+            }
+        }
+        
+        // Load Stars from Firestore
+        async function loadStars() {
+            try {
+                document.getElementById('loadingSpinner').classList.remove('hidden');
+                document.getElementById('rankingList').classList.add('hidden');
+                
+                // Query only visible stars to match security rules
+                const q = query(
+                    collection(db, 'stars'),
+                    where('is_visible', '==', true)
+                );
+                
+                const snapshot = await getDocs(q);
+                allStars = snapshot.docs
+                    .map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    }))
+                    .sort((a, b) => (b.votes || 0) - (a.votes || 0));
+                
+                document.getElementById('loadingSpinner').classList.add('hidden');
+                renderStars(allStars);
+                
+            } catch (error) {
+                console.error('Error loading stars:', error);
+                document.getElementById('loadingSpinner').classList.add('hidden');
+                document.getElementById('emptyState').classList.remove('hidden');
+            }
+        }
+        
+        // Render Stars List
+        function renderStars(stars) {
+            const container = document.getElementById('rankingList');
+            
+            if (stars.length === 0) {
+                container.classList.add('hidden');
+                document.getElementById('emptyState').classList.remove('hidden');
+                return;
+            }
+            
+            container.classList.remove('hidden');
+            document.getElementById('emptyState').classList.add('hidden');
+            
+            container.innerHTML = stars.map((star, index) => {
+                const name = star.name?.[currentLang] || star.name?.ko || 'Unknown';
+                const group = star.group?.[currentLang] || star.group?.ko || '';
+                const votes = star.votes || 0;
+                const rank = index + 1;
+                
+                let rankBadge = '';
+                if (rank === 1) {
+                    rankBadge = '<div class="gold-gradient text-slate-900 rounded-full p-2"><i data-lucide="trophy" class="w-5 h-5"></i></div>';
+                } else if (rank === 2) {
+                    rankBadge = '<div class="bg-slate-400 text-slate-900 rounded-full p-2"><i data-lucide="medal" class="w-5 h-5"></i></div>';
+                } else if (rank === 3) {
+                    rankBadge = '<div class="bg-amber-700 text-slate-100 rounded-full p-2"><i data-lucide="award" class="w-5 h-5"></i></div>';
+                } else {
+                    rankBadge = `<div class="text-slate-500 text-xl font-bold w-10 text-center">#${rank}</div>`;
+                }
+                
+                return `
+                    <div class="glass-card rounded-2xl p-4 hover:bg-slate-800/50 cursor-pointer active:scale-[0.98] transition-all hover-lift animate-in" onclick="openDetailModal('${star.id}')">
+                        <div class="flex items-center gap-4">
+                            ${rankBadge}
+                            <div class="flex-1 min-w-0">
+                                <h3 class="font-bold text-lg truncate">${name}</h3>
+                                ${group ? `<p class="text-sm text-slate-400 truncate">${group}</p>` : ''}
+                            </div>
+                            <div class="text-right">
+                                <p class="text-2xl font-bold text-transparent bg-clip-text gold-gradient">${votes.toLocaleString()}</p>
+                                <p class="text-xs text-slate-400">${translations[currentLang].votes}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            initLucideIcons();
+        }
+        
+        // Filter Stars
+        function filterStars() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const category = document.getElementById('categoryFilter').value;
+            const sortBy = document.getElementById('sortFilter').value;
+            
+            let filtered = allStars.filter(star => {
+                // Search filter
+                const nameKo = star.name?.ko?.toLowerCase() || '';
+                const nameEn = star.name?.en?.toLowerCase() || '';
+                const groupKo = star.group?.ko?.toLowerCase() || '';
+                const groupEn = star.group?.en?.toLowerCase() || '';
+                const searchMatch = nameKo.includes(searchTerm) || nameEn.includes(searchTerm) || 
+                                  groupKo.includes(searchTerm) || groupEn.includes(searchTerm);
+                
+                // Category filter
+                const categoryMatch = category === 'all' || (star.categories && star.categories.includes(category));
+                
+                return searchMatch && categoryMatch;
+            });
+            
+            // Sort
+            if (sortBy === 'votes') {
+                filtered.sort((a, b) => (b.votes || 0) - (a.votes || 0));
+            } else if (sortBy === 'recent') {
+                filtered.sort((a, b) => {
+                    const aTime = a.created_at?.toMillis?.() || 0;
+                    const bTime = b.created_at?.toMillis?.() || 0;
+                    return bTime - aTime;
+                });
+            }
+            
+            renderStars(filtered);
+        }
+        
+        // Modal Functions
+        function openAddModal() {
+            if (!currentUser) {
+                alert(currentLang === 'ko' ? '로그인이 필요합니다.' : 'Please sign in first.');
+                return;
+            }
+            closeSettingsModal();
+            document.getElementById('addStarModal').classList.remove('hidden');
+        }
+        
+        function closeAddModal() {
+            document.getElementById('addStarModal').classList.add('hidden');
+            document.getElementById('addStarForm').reset();
+        }
+        
+        window.openDetailModal = async function(starId) {
+            currentStarId = starId;
+            const star = allStars.find(s => s.id === starId);
+            
+            if (!star) return;
+            
+            document.getElementById('detailName').textContent = star.name?.[currentLang] || star.name?.ko || 'Unknown';
+            document.getElementById('detailGroup').textContent = star.group?.[currentLang] || star.group?.ko || '';
+            document.getElementById('detailDescription').textContent = star.description?.[currentLang] || star.description?.ko || '';
+            document.getElementById('detailTotalVotes').textContent = (star.votes || 0).toLocaleString();
+            
+            // Render country stats
+            renderCountryStats(star.votes_by_country || {}, star.votes || 0);
+            
+            document.getElementById('detailModal').classList.remove('hidden');
+            initLucideIcons();
+        };
+        
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.add('hidden');
+            currentStarId = null;
+        }
+        
+        function renderCountryStats(votesByCountry, totalVotes) {
+            const container = document.getElementById('countryStats');
+            
+            if (totalVotes === 0) {
+                container.innerHTML = `<p class="text-slate-400 text-center py-4">${currentLang === 'ko' ? '아직 투표가 없습니다' : 'No votes yet'}</p>`;
+                return;
+            }
+            
+            // Sort countries by votes
+            const sortedCountries = Object.entries(votesByCountry)
+                .sort(([, a], [, b]) => b - a)
+                .slice(0, 10); // Top 10 countries
+            
+            container.innerHTML = sortedCountries.map(([countryCode, votes]) => {
+                const percentage = ((votes / totalVotes) * 100).toFixed(1);
+                const countryName = countryNames[countryCode]?.[currentLang] || `${countryCode}`;
+                
+                return `
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-sm">
+                            <span>${countryName}</span>
+                            <span class="text-slate-400">${votes.toLocaleString()} (${percentage}%)</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+                            <div class="country-bar h-full rounded-full" style="width: ${percentage}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Add Star Handler
+        async function handleAddStar(e) {
+            e.preventDefault();
+            
+            if (!currentUser) {
+                alert(currentLang === 'ko' ? '로그인이 필요합니다.' : 'Please sign in first.');
+                return;
+            }
+            
+            const nameKo = document.getElementById('nameKo').value.trim();
+            const nameEn = document.getElementById('nameEn').value.trim();
+            const groupKo = document.getElementById('groupKo').value.trim();
+            const groupEn = document.getElementById('groupEn').value.trim();
+            const descKo = document.getElementById('descKo').value.trim();
+            const descEn = document.getElementById('descEn').value.trim();
+            
+            const categoryCheckboxes = document.querySelectorAll('.category-checkbox:checked');
+            const categories = Array.from(categoryCheckboxes).map(cb => cb.value);
+            
+            if (categories.length === 0) {
+                alert(currentLang === 'ko' ? '최소 하나의 카테고리를 선택해주세요.' : 'Please select at least one category.');
+                return;
+            }
+            
+            // Create search key for duplicate checking
+            const searchKey = [
+                nameKo.toLowerCase(),
+                nameEn.toLowerCase(),
+                groupKo.toLowerCase(),
+                groupEn.toLowerCase(),
+                `${groupKo} ${nameKo}`.toLowerCase(),
+                `${groupEn} ${nameEn}`.toLowerCase()
+            ].filter(Boolean);
+            
+            try {
+                // Check for duplicates
+                const q = query(collection(db, 'stars'));
+                const snapshot = await getDocs(q);
+                
+                const isDuplicate = snapshot.docs.some(doc => {
+                    const data = doc.data();
+                    const existingKeys = data.search_key || [];
+                    return searchKey.some(key => existingKeys.includes(key));
+                });
+                
+                if (isDuplicate) {
+                    alert(currentLang === 'ko' ? 
+                        '이미 등록된 스타입니다.' : 
+                        'This star has already been registered.');
+                    return;
+                }
+                
+                // Add to Firestore
+                await addDoc(collection(db, 'stars'), {
+                    name: { ko: nameKo, en: nameEn },
+                    group: { ko: groupKo, en: groupEn },
+                    description: { ko: descKo, en: descEn },
+                    categories: categories,
+                    search_key: searchKey,
+                    votes: 0,
+                    votes_by_country: {},
+                    is_visible: false, // Requires admin approval
+                    creator_uid: currentUser.uid,
+                    created_at: serverTimestamp()
+                });
+                
+                alert(currentLang === 'ko' ? 
+                    '등록되었습니다! 관리자 승인 후 표시됩니다.' : 
+                    'Submitted! It will be visible after admin approval.');
+                
+                closeAddModal();
+                
+            } catch (error) {
+                console.error('Error adding star:', error);
+                alert(currentLang === 'ko' ? 
+                    '등록 중 오류가 발생했습니다.' : 
+                    'An error occurred during submission.');
+            }
+        }
+        
+        // Vote Handler
+        async function handleVote() {
+            if (!currentUser) {
+                alert(currentLang === 'ko' ? '로그인이 필요합니다.' : 'Please sign in first.');
+                return;
+            }
+            
+            if (!currentStarId) return;
+            
+            try {
+                // Get user's country from IP
+                const countryCode = await getUserCountry();
+                
+                // Update Firestore
+                const starRef = doc(db, 'stars', currentStarId);
+                await updateDoc(starRef, {
+                    votes: increment(1),
+                    [`votes_by_country.${countryCode}`]: increment(1)
+                });
+                
+                alert(currentLang === 'ko' ? '투표가 완료되었습니다! 🎉' : 'Vote counted! 🎉');
+                
+                // Reload data
+                await loadStars();
+                closeDetailModal();
+                
+            } catch (error) {
+                console.error('Error voting:', error);
+                alert(currentLang === 'ko' ? 
+                    '투표 중 오류가 발생했습니다.' : 
+                    'An error occurred while voting.');
+            }
+        }
+        
+        // Get User Country from IP
+        async function getUserCountry() {
+            try {
+                const response = await fetch('https://ipapi.co/json/');
+                const data = await response.json();
+                return data.country_code || 'XX';
+            } catch (error) {
+                console.error('Error getting country:', error);
+                return 'XX';
+            }
+        }
+        
+        // Initialize Lucide Icons
+        function initLucideIcons() {
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+        }
+        
+        // Start App
+        init();
+        
+        // Make functions globally accessible
+        window.openDetailModal = openDetailModal;
+    </script>
+</body>
+</html>
