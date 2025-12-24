@@ -28,6 +28,14 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="StarChamp">
     
+    <!-- Google AdSense / H5 Ads SDK -->
+     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5352248234640810"
+     crossorigin="anonymous"></script>
+    <script>
+        window.adsbygoogle = window.adsbygoogle || [];
+        const adBreak = function(o) { adsbygoogle.push(o); }
+    </script>
+
     <title>⭐ StarChamp - Global Fandom Voting</title>
     
     <!-- Tailwind CSS -->
@@ -393,6 +401,9 @@
         <!-- Footer -->
         <footer class="text-center py-8 text-slate-500 text-sm">
             <p>&copy; 2025 StarChamp. Made with 💜 for global fandoms.</p>
+            <div class="mt-2">
+                <a href="privacy.html" class="hover:text-violet-400 transition-colors">Privacy Policy</a>
+            </div>
         </footer>
         
     </div>
@@ -2426,36 +2437,51 @@
             const btn = document.getElementById('watchAdBtn');
             const originalText = btn.innerHTML;
             
+            if (typeof adBreak === 'undefined') {
+                alert(currentLang === 'ko' ? '광고를 불러올 수 없습니다. 광고 차단 해제 후 다시 시도해주세요.' : 'Cannot load ad. Please disable ad blocker and try again.');
+                return;
+            }
+
             try {
                 btn.disabled = true;
                 btn.innerHTML = `<div class="spinner"></div>`;
                 
-                // AdMob Rewarded Ad Integration Placeholder
-                console.log("AdMob Rewarded Ad requested...");
-                
-                // Simulate ad watching (3 seconds)
-                await new Promise(resolve => setTimeout(resolve, 3000));
-                
-                // Reward the user
-                const userRef = doc(db, 'users', currentUser.uid);
-                await updateDoc(userRef, {
-                    tickets: increment(3)
+                adBreak({
+                    type: 'reward',
+                    name: 'get_ticket',
+                    beforeReward: (showAdFn) => {
+                        showAdFn();
+                    },
+                    adDismissed: () => {
+                        btn.disabled = false;
+                        btn.innerHTML = originalText;
+                    },
+                    adViewed: async () => {
+                        const userRef = doc(db, 'users', currentUser.uid);
+                        await updateDoc(userRef, {
+                            tickets: increment(3)
+                        });
+                        
+                        userData.tickets += 3;
+                        updateAuthUI(currentUser);
+                        
+                        alert(currentLang === 'ko' ? 
+                            '광고 시청 완료! 투표권 3개가 지급되었습니다. 🎁' : 
+                            'Ad watched! 3 tickets granted. 🎁');
+                        
+                        closeAdMissionModal();
+                        btn.disabled = false;
+                        btn.innerHTML = originalText;
+                    },
+                    adBreakDone: (placementInfo) => {
+                        btn.disabled = false;
+                        btn.innerHTML = originalText;
+                    }
                 });
                 
-                userData.tickets += 3;
-                updateAuthUI(currentUser);
-                
-                alert(currentLang === 'ko' ? 
-                    '광고 시청 완료! 투표권 3개가 지급되었습니다. 🎁' : 
-                    'Ad watched! 3 tickets granted. 🎁');
-                
-                closeAdMissionModal();
             } catch (error) {
-                console.error("Error during ad mission:", error);
-                alert(currentLang === 'ko' ? 
-                    '광고 시청 중 오류가 발생했습니다.' : 
-                    'An error occurred while watching the ad.');
-            } finally {
+                console.error("Ad Error:", error);
+                alert(currentLang === 'ko' ? '광고 재생 중 오류가 발생했습니다.' : 'Error playing ad.');
                 btn.disabled = false;
                 btn.innerHTML = originalText;
             }
