@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "kr.starchamp.app",
+    "sha256_cert_fingerprints": ["CA:D0:41:17:F8:E5:EB:DA:89:6B:3F:E9:47:C5:13:4D:EF:78:92:11:23:D2:E0:29:12:09:5E:D3:C8:61:0F:CF"]
+  }
+}]
