@@ -1,13 +1,15 @@
 {
+  "id": "kr.starchamp.app",
   "name": "StarChamp",
   "short_name": "StarChamp",
   "description": "Vote for your favorite stars from around the world",
   "start_url": "./index.html",
-  "scope": ".",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
+  "categories": ["entertainment", "social"],
   "icons": [
     {
       "src": "logo/logo.png",
@@ -19,7 +21,29 @@
       "src": "logo/logo.png",
       "sizes": "512x512",
       "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "logo/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "logo/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "StarChamp Desktop"
+    },
+    {
+      "src": "logo/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "StarChamp Mobile"
     }
   ]
 }
