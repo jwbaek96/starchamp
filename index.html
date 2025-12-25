@@ -2116,9 +2116,10 @@
 
                 document.getElementById('loadingSpinner').classList.remove('hidden');
                 
-                // Admin sees all stars, users see only visible ones
+                // Admin and logged-in users see all stars (including pending), 
+                // non-logged-in users see only visible ones
                 let q;
-                if (isAdmin) {
+                if (isAdmin || auth.currentUser) {
                     q = query(collection(db, 'stars'));
                 } else {
                     q = query(
@@ -2204,7 +2205,7 @@
                     }
                 }
                 
-                const pendingBadge = (isAdmin && !star.is_visible) 
+                const pendingBadge = (!star.is_visible) 
                     ? `<span class="bg-amber-500/20 text-amber-400 text-[10px] px-1.5 py-0.5 rounded-full font-bold border border-amber-500/30 ml-2">PENDING</span>` 
                     : '';
                 
