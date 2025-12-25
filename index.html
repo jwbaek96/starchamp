@@ -1113,7 +1113,7 @@
         };
 
         // Gemini API Configuration (Replace with your actual API Key)
-        const GEMINI_API_KEY = "AIzaSyAWEHXZ662ASu21uKv5KZh88I1Wn8lGu54";
+        let GEMINI_API_KEY = "YOUR_GEMINI_API_KEY_HERE";
         let genAI = null;
         try {
             if (GEMINI_API_KEY && !GEMINI_API_KEY.includes("YOUR_GEMINI_API_KEY")) {
@@ -1806,10 +1806,18 @@
             }
 
             if (GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE") {
-                alert(currentLang === 'ko' ? 
-                    'Gemini API 키가 설정되지 않았습니다. 코드에서 GEMINI_API_KEY를 설정해주세요.' : 
-                    'Gemini API Key is not set. Please set GEMINI_API_KEY in the code.');
-                return;
+                try {
+                    const keyDoc = await getDoc(doc(db, 'settings', 'keys'));
+                    if (keyDoc.exists()) {
+                        GEMINI_API_KEY = keyDoc.data().gemini;
+                    } else {
+                        throw new Error("Key not found in Firestore");
+                    }
+                } catch (e) {
+                    console.error("Error fetching API key:", e);
+                    alert(currentLang === 'ko' ? 'API 키를 불러오지 못했습니다.' : 'Failed to load API Key.');
+                    return;
+                }
             }
 
             if (!genAI) {
@@ -2422,10 +2430,18 @@
             }
 
             if (GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE") {
-                alert(currentLang === 'ko' ? 
-                    'Gemini API 키가 설정되지 않았습니다. 코드에서 GEMINI_API_KEY를 설정해주세요.' : 
-                    'Gemini API Key is not set. Please set GEMINI_API_KEY in the code.');
-                return;
+                try {
+                    const keyDoc = await getDoc(doc(db, 'settings', 'keys'));
+                    if (keyDoc.exists()) {
+                        GEMINI_API_KEY = keyDoc.data().gemini;
+                    } else {
+                        throw new Error("Key not found in Firestore");
+                    }
+                } catch (e) {
+                    console.error("Error fetching API key:", e);
+                    alert(currentLang === 'ko' ? 'API 키를 불러오지 못했습니다.' : 'Failed to load API Key.');
+                    return;
+                }
             }
 
             if (!genAI) {
