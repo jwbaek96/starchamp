@@ -785,6 +785,14 @@
                         </label>
                     </div>
                 </div>
+
+                <!-- Approval Notice -->
+                <div class="bg-violet-500/10 border border-violet-500/20 rounded-xl p-4">
+                    <p class="text-xs text-violet-300 leading-relaxed flex gap-2">
+                        <i data-lucide="info" class="w-4 h-4 shrink-0"></i>
+                        <span data-i18n="approval_notice">Visible after admin approval (takes 1-2 business days). Content may be automatically generated or edited via AI.</span>
+                    </p>
+                </div>
                 
                 <!-- Submit Button -->
                 <div class="flex gap-3 pt-4">
@@ -1088,7 +1096,7 @@
                     <img src="assets/image/ticket.png" alt="Ticket" class="w-25 h-25 object-contain">
                 </div>
                 <h3 class="text-2xl font-bold mb-3 text-slate-900" data-i18n="ad_mission_title">무료 투표권 받기!</h3>
-                <p class="text-slate-500 text-base leading-relaxed px-2" data-i18n="ad_mission_desc" style="word-break: keep-all;">짧은 광고를 시청하면 투표권 3개를 무료로 드립니다.</p>
+                <p class="text-slate-500 text-base leading-relaxed px-2" data-i18n="ad_mission_desc" style="word-break: keep-all;">짧은 광고를 시청하면 투표권 10개를 무료로 드립니다.</p>
             </div>
             
             <button id="watchAdBtn" class="w-full bg-[#8b5cf6] hover:bg-[#7c3aed] text-white px-6 py-6 rounded-[2rem] font-bold text-xl active:scale-95 transition-all flex flex-row items-center justify-center gap-2 shadow-lg shadow-violet-200">
@@ -1214,7 +1222,7 @@
                 cancel: "취소",
                 submit: "제출",
                 add_star_desc: "스타챔프는 유저와 함께 만들어가는 공간입니다. 찾는 스타가 없다면 직접 등록하여 응원해보세요!",
-                approval_notice: "관리자 승인 후 표시됩니다",
+                approval_notice: "관리자 승인 후 표시됩니다 (1~2영업일 소요). 내용은 AI를 통해 자동 생성되거나 수정될 수 있습니다.",
                 total_votes: "총 득표수",
                 vote_now: "",
                 votes_by_country: "국가별 득표 현황",
@@ -1229,7 +1237,7 @@
                 logout: "로그아웃",
                 tickets: "투표권",
                 check_in: "출석체크",
-                check_in_success: "출석체크 완료! 투표권 1개가 지급되었습니다. 🎁",
+                check_in_success: "출석체크 완료! 투표권 5개가 지급되었습니다. 🎁",
                 already_checked_in: "오늘은 이미 출석체크를 하셨습니다.",
                 my_submissions: "내가 등록한 스타",
                 pending: "대기 중",
@@ -1239,7 +1247,7 @@
                 vote_history: "전체 투표 내역",
                 voted_for: "에게 투표함",
                 ad_mission_title: "무료 투표권 받기!",
-                ad_mission_desc: "짧은 광고를 시청하면 투표권 3개를 무료로 드립니다.",
+                ad_mission_desc: "짧은 광고를 시청하면 투표권 10개를 무료로 드립니다.",
                 watch_ad: "PLAY",
                 ranking_title: "스타 랭킹"
             },
@@ -1272,7 +1280,7 @@
                 categories: "Categories",
                 cancel: "Cancel",
                 submit: "Submit",
-                approval_notice: "Your submission will be visible after admin approval",
+                approval_notice: "Visible after admin approval (takes 1-2 business days). Content may be automatically generated or edited via AI.",
                 total_votes: "Total Votes",
                 vote_now: "Vote",
                 votes_by_country: "Votes by Country",
@@ -1288,7 +1296,7 @@
                 logout: "Logout",
                 tickets: "Tickets",
                 check_in: "Check-in",
-                check_in_success: "Check-in complete! 1 ticket granted. 🎁",
+                check_in_success: "Check-in complete! 5 tickets granted. 🎁",
                 already_checked_in: "You have already checked in today.",
                 my_submissions: "My Submissions",
                 pending: "Pending",
@@ -1298,7 +1306,7 @@
                 vote_history: "Vote History",
                 voted_for: "voted for",
                 ad_mission_title: "Get Free Tickets!",
-                ad_mission_desc: "Watch a short video ad and get 3 free voting tickets.",
+                ad_mission_desc: "Watch a short video ad and get 10 free voting tickets.",
                 watch_ad: "PLAY",
                 ranking_title: "Star Ranking"
             }
@@ -1990,11 +1998,11 @@
             try {
                 const userRef = doc(db, 'users', currentUser.uid);
                 await updateDoc(userRef, {
-                    tickets: increment(1),
+                    tickets: increment(5),
                     last_check_in: serverTimestamp()
                 });
                 
-                userData.tickets += 1;
+                userData.tickets += 5;
                 userData.last_check_in = { toDate: () => now }; // Mock for UI
                 
                 updateAuthUI(currentUser);
@@ -2279,7 +2287,7 @@
                 setTimeout(() => {
                     showNotification(
                         currentLang === 'ko' ? '🎁 오늘의 투표권!' : '🎁 Daily Tickets!',
-                        currentLang === 'ko' ? '오늘의 무료 투표권 10개가 기다리고 있어요. 지금 받으러 오세요!' : '10 free tickets are waiting for you. Come and get them now!'
+                        currentLang === 'ko' ? '오늘의 무료 투표권 5개가 기다리고 있어요. 지금 받으러 오세요!' : '5 free tickets are waiting for you. Come and get them now!'
                     );
                 }, 3000); // Show after 3 seconds
             }
@@ -2900,8 +2908,6 @@
                     country: countryCode
                 });
                 
-                alert(currentLang === 'ko' ? '투표가 완료되었습니다! 🎉' : 'Vote counted! 🎉');
-                
                 // GA4 Event
                 if (typeof gtag !== 'undefined') {
                     gtag('event', 'vote', {
@@ -2991,15 +2997,15 @@
                     adViewed: async () => {
                         const userRef = doc(db, 'users', currentUser.uid);
                         await updateDoc(userRef, {
-                            tickets: increment(3)
+                            tickets: increment(10)
                         });
                         
-                        userData.tickets += 3;
+                        userData.tickets += 10;
                         updateAuthUI(currentUser);
                         
                         alert(currentLang === 'ko' ? 
-                            '광고 시청 완료! 투표권 3개가 지급되었습니다. 🎁' : 
-                            'Ad watched! 3 tickets granted. 🎁');
+                            '광고 시청 완료! 투표권 10개가 지급되었습니다. 🎁' : 
+                            'Ad watched! 10 tickets granted. 🎁');
                         
                         closeAdMissionModal();
                         btn.disabled = false;
