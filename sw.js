@@ -55,3 +55,34 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
+
+// Handle Push Notifications
+self.addEventListener('push', (event) => {
+  const data = event.data ? event.data.json() : {
+    title: 'StarChamp',
+    body: '새로운 소식이 있습니다!',
+    icon: './logo/logo192.png'
+  };
+
+  const options = {
+    body: data.body,
+    icon: data.icon || './logo/logo192.png',
+    badge: './logo/logo192.png',
+    vibrate: [100, 50, 100],
+    data: {
+      url: data.url || '/'
+    }
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(data.title, options)
+  );
+});
+
+// Handle Notification Click
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  event.waitUntil(
+    clients.openWindow(event.notification.data.url)
+  );
+});

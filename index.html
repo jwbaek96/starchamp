@@ -1133,7 +1133,7 @@
         // Import Firebase modules
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-        import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, increment, updateDoc, doc, serverTimestamp, getDoc, setDoc, onSnapshot, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, increment, updateDoc, doc, serverTimestamp, getDoc, setDoc, onSnapshot, deleteDoc, limit } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
         import { GoogleGenerativeAI } from 'https://esm.run/@google/generative-ai';
         
         // Firebase Configuration
@@ -1484,9 +1484,13 @@
                 
                 if (isAdmin) {
                     await loadStars(); // Reload to include pending stars for admin
+                    setupAdminNotifications(); // Setup real-time notifications for admin
                 } else {
                     renderStars(allStars); // Re-render to show favorites correctly
                 }
+                
+                // Setup general user notifications
+                setupUserNotifications();
             } catch (error) {
                 console.error("Error syncing user data:", error);
                 alert("데이터 동기화 중 오류가 발생했습니다. 파이어베이스 규칙(Rules)을 확인해주세요.");
@@ -1953,6 +1957,14 @@
         
         async function handleLogout() {
             try {
+                if (adminUnsubscribe) {
+                    adminUnsubscribe();
+                    adminUnsubscribe = null;
+                }
+                // Clear user notification listeners
+                userNotificationsUnsubscribe.forEach(unsub => unsub());
+                userNotificationsUnsubscribe = [];
+                
                 await signOut(auth);
                 closeSettingsModal();
                 closeMyPageModal();
@@ -2152,6 +2164,199 @@
             }
         }
         
+        // Admin Notifications
+        let adminUnsubscribe = null;
+        async function setupAdminNotifications() {
+            if (!isAdmin) return;
+            
+            // Check if browser supports notifications
+            if (!('Notification' in window)) {
+                console.log('This browser does not support notifications');
+                return;
+            }
+
+            // Request Permission
+            if (Notification.permission === 'default') {
+                const permission = await Notification.requestPermission();
+                if (permission !== 'granted') {
+                    console.log('Notification permission denied');
+                    return;
+                }
+            }
+
+            if (adminUnsubscribe) adminUnsubscribe();
+
+            // Listen for new pending stars
+            const q = query(
+                collection(db, 'stars'),
+                where('is_visible', '==', false),
+                orderBy('created_at', 'desc')
+            );
+
+            let isInitialLoad = true;
+            adminUnsubscribe = onSnapshot(q, (snapshot) => {
+                if (isInitialLoad) {
+                    isInitialLoad = false;
+                    return;
+                }
+
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type === 'added') {
+                        const starData = change.doc.data();
+                        const starId = change.doc.id;
+                        showAdminNotification(starId, starData);
+                    }
+                });
+            }, (error) => {
+                console.error("Admin notification listener error:", error);
+            });
+        }
+
+        function showAdminNotification(starId, starData) {
+            const title = currentLang === 'ko' ? '⭐ 신규 승인 요청' : '⭐ New Approval Request';
+            const body = currentLang === 'ko' 
+                ? `${starData.name.ko} (${starData.group.ko || '솔로'}) 스타 등록 요청이 왔습니다.`
+                : `New star registration request: ${starData.name.en} (${starData.group.en || 'Solo'})`;
+
+            if (Notification.permission === 'granted') {
+                const notification = new Notification(title, {
+                    body: body,
+                    icon: './logo/logo192.png',
+                    badge: './logo/logo192.png',
+                    tag: 'new-star-request-' + starId,
+                    requireInteraction: true
+                });
+
+                notification.onclick = () => {
+                    window.focus();
+                    openDetailModal(starId);
+                    notification.close();
+                };
+            }
+        }
+
+        // User Notifications
+        let userNotificationsUnsubscribe = [];
+        
+        async function setupUserNotifications() {
+            if (!currentUser) return;
+
+            // Request Permission
+            if (Notification.permission === 'default') {
+                try {
+                    await Notification.requestPermission();
+                } catch (e) {
+                    console.error("Error requesting notification permission:", e);
+                }
+            }
+            
+            // Clear existing listeners
+            userNotificationsUnsubscribe.forEach(unsub => unsub());
+            userNotificationsUnsubscribe = [];
+
+            if (Notification.permission !== 'granted') return;
+
+            // 1. Daily Check-in Reminder
+            checkDailyReminder();
+
+            // 2. Approval Completion (for my stars)
+            setupApprovalListener();
+
+            // 3. New Star Registration (for everyone)
+            setupNewStarListener();
+        }
+
+        function checkDailyReminder() {
+            if (!userData) return;
+            const lastCheckIn = userData.last_check_in?.toDate?.() || new Date(0);
+            const now = new Date();
+            
+            const isSameDay = lastCheckIn.getDate() === now.getDate() &&
+                             lastCheckIn.getMonth() === now.getMonth() &&
+                             lastCheckIn.getFullYear() === now.getFullYear();
+            
+            if (!isSameDay) {
+                setTimeout(() => {
+                    showNotification(
+                        currentLang === 'ko' ? '🎁 오늘의 투표권!' : '🎁 Daily Tickets!',
+                        currentLang === 'ko' ? '오늘의 무료 투표권 10개가 기다리고 있어요. 지금 받으러 오세요!' : '10 free tickets are waiting for you. Come and get them now!'
+                    );
+                }, 3000); // Show after 3 seconds
+            }
+        }
+
+        function setupApprovalListener() {
+            const q = query(
+                collection(db, 'stars'),
+                where('creator_uid', '==', currentUser.uid),
+                where('is_visible', '==', true)
+            );
+
+            let isInitialLoad = true;
+            const unsub = onSnapshot(q, (snapshot) => {
+                if (isInitialLoad) {
+                    isInitialLoad = false;
+                    return;
+                }
+
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type === 'added' || (change.type === 'modified' && change.doc.data().is_visible)) {
+                        const starData = change.doc.data();
+                        showNotification(
+                            currentLang === 'ko' ? '✅ 승인 완료!' : '✅ Approved!',
+                            currentLang === 'ko' ? `신청하신 ${starData.name.ko} 스타가 승인되어 이제 투표가 가능합니다!` : `Your star ${starData.name.en} has been approved and is now open for voting!`
+                        );
+                    }
+                });
+            });
+            userNotificationsUnsubscribe.push(unsub);
+        }
+
+        function setupNewStarListener() {
+            const q = query(
+                collection(db, 'stars'),
+                where('is_visible', '==', true),
+                orderBy('created_at', 'desc'),
+                limit(5)
+            );
+
+            let isInitialLoad = true;
+            const unsub = onSnapshot(q, (snapshot) => {
+                if (isInitialLoad) {
+                    isInitialLoad = false;
+                    return;
+                }
+
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type === 'added') {
+                        const starData = change.doc.data();
+                        // Don't notify if I'm the creator (already handled by approval listener)
+                        if (starData.creator_uid === currentUser.uid) return;
+
+                        showNotification(
+                            currentLang === 'ko' ? '✨ 신규 스타 등장!' : '✨ New Star!',
+                            currentLang === 'ko' ? `새로운 스타 ${starData.name.ko}이(가) 등록되었습니다. 지금 확인해보세요!` : `A new star ${starData.name.en} has been registered. Check them out now!`
+                        );
+                    }
+                });
+            });
+            userNotificationsUnsubscribe.push(unsub);
+        }
+
+        function showNotification(title, body) {
+            if (Notification.permission === 'granted') {
+                const notification = new Notification(title, {
+                    body: body,
+                    icon: './logo/logo192.png',
+                    badge: './logo/logo192.png',
+                });
+                notification.onclick = () => {
+                    window.focus();
+                    notification.close();
+                };
+            }
+        }
+
         // Load Stars from Firestore with Real-time Listener
         async function loadStars() {
             try {
