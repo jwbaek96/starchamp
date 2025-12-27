@@ -308,11 +308,13 @@
             color: #1e293b;
         }
 
-        body.light-theme .bg-slate-900\/50 {
-            background-color: rgba(255, 255, 255, 0.5);
+        body.light-theme .bg-slate-900\/50,
+        body.light-theme .bg-slate-800\/50 {
+            background-color: rgba(15, 23, 42, 0.05);
         }
 
-        body.light-theme .border-slate-700 {
+        body.light-theme .border-slate-700,
+        body.light-theme .border-slate-700\/50 {
             border-color: rgba(15, 23, 42, 0.1);
         }
 
@@ -327,6 +329,10 @@
 
         body.light-theme .nav-item.active {
             color: #8b5cf6;
+        }
+
+        body.light-theme .text-violet-300 {
+            color: #7c3aed;
         }
 
         body.light-theme .text-slate-400 {
@@ -509,14 +515,15 @@
                         <!-- Category Filter -->
                         <select id="categoryFilter" class="w-full bg-slate-900/50 border border-slate-700 rounded-full px-4 py-1.5 md:py-2 text-sm md:text-base focus:outline-none focus:border-violet-500 transition-colors">
                             <option value="all" data-i18n="all_categories">All Categories</option>
+                            <option value="celebrity" data-i18n="celebrity">Celebrity</option>
+                            <option value="ordinary" data-i18n="ordinary">Ordinary Person</option>
                             <option value="singer" data-i18n="singer">Singer</option>
                             <option value="actor" data-i18n="actor">Actor</option>
-                            <option value="celebrity" data-i18n="celebrity">Celebrity</option>
+                            <option value="rapper" data-i18n="rapper">Rapper</option>
                             <option value="dancer" data-i18n="dancer">Dancer</option>
                             <option value="comedy" data-i18n="comedy">Comedian</option>
                             <option value="politics" data-i18n="politics">Politician</option>
                             <option value="business" data-i18n="business">Businessperson</option>
-                            <option value="ordinary" data-i18n="ordinary">Ordinary Person</option>
                             <option value="other" data-i18n="other">Other</option>
                             <option id="pendingFilterOption" value="pending" data-i18n="pending">Pending</option>
                         </select>
@@ -910,8 +917,8 @@
                             <span data-i18n="actor">Actor</span>
                         </label>
                         <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" value="celebrity" class="category-checkbox rounded text-violet-500 focus:ring-violet-500">
-                            <span data-i18n="celebrity">Celebrity</span>
+                            <input type="checkbox" value="rapper" class="category-checkbox rounded text-violet-500 focus:ring-violet-500">
+                            <span data-i18n="rapper">Rapper</span>
                         </label>
                         <label class="flex items-center gap-2 cursor-pointer">
                             <input type="checkbox" value="dancer" class="category-checkbox rounded text-violet-500 focus:ring-violet-500">
@@ -928,10 +935,6 @@
                         <label class="flex items-center gap-2 cursor-pointer">
                             <input type="checkbox" value="business" class="category-checkbox rounded text-violet-500 focus:ring-violet-500">
                             <span data-i18n="business">Businessperson</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" value="ordinary" class="category-checkbox rounded text-violet-500 focus:ring-violet-500">
-                            <span data-i18n="ordinary">Ordinary Person</span>
                         </label>
                         <label class="flex items-center gap-2 cursor-pointer">
                             <input type="checkbox" value="other" class="category-checkbox rounded text-violet-500 focus:ring-violet-500">
@@ -964,10 +967,6 @@
                         <span data-i18n="submit">Submit</span>
                     </button>
                 </div>
-                
-                <p class="text-sm text-slate-400 text-center">
-                    <span data-i18n="approval_notice">Your submission will be visible after admin approval</span>
-                </p>
             </form>
         </div>
     </div>
@@ -1089,39 +1088,35 @@
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
                         <label class="flex items-center gap-2 cursor-pointer">
                             <input type="checkbox" value="singer" class="edit-category-checkbox rounded text-violet-500 focus:ring-violet-500">
-                            <span>Singer</span>
+                            <span data-i18n="singer">Singer</span>
                         </label>
                         <label class="flex items-center gap-2 cursor-pointer">
                             <input type="checkbox" value="actor" class="edit-category-checkbox rounded text-violet-500 focus:ring-violet-500">
-                            <span>Actor</span>
+                            <span data-i18n="actor">Actor</span>
                         </label>
                         <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" value="celebrity" class="edit-category-checkbox rounded text-violet-500 focus:ring-violet-500">
-                            <span>Celebrity</span>
+                            <input type="checkbox" value="rapper" class="edit-category-checkbox rounded text-violet-500 focus:ring-violet-500">
+                            <span data-i18n="rapper">Rapper</span>
                         </label>
                         <label class="flex items-center gap-2 cursor-pointer">
                             <input type="checkbox" value="dancer" class="edit-category-checkbox rounded text-violet-500 focus:ring-violet-500">
-                            <span>Dancer</span>
+                            <span data-i18n="dancer">Dancer</span>
                         </label>
                         <label class="flex items-center gap-2 cursor-pointer">
                             <input type="checkbox" value="comedy" class="edit-category-checkbox rounded text-violet-500 focus:ring-violet-500">
-                            <span>Comedian</span>
+                            <span data-i18n="comedy">Comedian</span>
                         </label>
                         <label class="flex items-center gap-2 cursor-pointer">
                             <input type="checkbox" value="politics" class="edit-category-checkbox rounded text-violet-500 focus:ring-violet-500">
-                            <span>Politician</span>
+                            <span data-i18n="politics">Politician</span>
                         </label>
                         <label class="flex items-center gap-2 cursor-pointer">
                             <input type="checkbox" value="business" class="edit-category-checkbox rounded text-violet-500 focus:ring-violet-500">
-                            <span>Businessperson</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" value="ordinary" class="edit-category-checkbox rounded text-violet-500 focus:ring-violet-500">
-                            <span>Ordinary Person</span>
+                            <span data-i18n="business">Businessperson</span>
                         </label>
                         <label class="flex items-center gap-2 cursor-pointer">
                             <input type="checkbox" value="other" class="edit-category-checkbox rounded text-violet-500 focus:ring-violet-500">
-                            <span>Other</span>
+                            <span data-i18n="other">Other</span>
                         </label>
                     </div>
                 </div>
@@ -1355,12 +1350,13 @@
                 all_categories: "전체 카테고리",
                 singer: "가수",
                 actor: "배우",
-                celebrity: "연예인",
+                rapper: "랩퍼",
                 dancer: "댄서",
                 comedy: "코미디언",
                 politics: "정치인",
                 business: "기업인",
                 ordinary: "일반인",
+                celebrity: "연예인",
                 other: "기타",
                 sort_votes: "득표순",
                 sort_recent: "최신순",
@@ -1424,13 +1420,14 @@
                 search_placeholder: "Search stars...",
                 all_categories: "All Categories",
                 singer: "Singer",
-                celebrity: "Celebrity",
                 actor: "Actor",
+                rapper: "Rapper",
                 dancer: "Dancer",
                 comedy: "Comedian",
                 politics: "Politician",
                 business: "Businessperson",
                 ordinary: "Ordinary Person",
+                celebrity: "Celebrity",
                 other: "Other",
                 sort_votes: "Most Votes",
                 sort_recent: "Recently Added",
@@ -2727,6 +2724,27 @@
             }
         }
         
+        // Helper to get categories with automatic additions
+        function getDisplayCategories(categories) {
+            if (!categories || !Array.isArray(categories)) return [];
+            let displayCats = [...categories];
+            
+            const hasPoliticsOrBusiness = categories.some(cat => cat === 'politics' || cat === 'business');
+            const hasCelebrityType = categories.some(cat => 
+                !['politics', 'business', 'other', 'ordinary', 'celebrity'].includes(cat)
+            );
+            
+            if (hasPoliticsOrBusiness && !displayCats.includes('ordinary')) {
+                displayCats.push('ordinary');
+            }
+            
+            if (hasCelebrityType && !displayCats.includes('celebrity')) {
+                displayCats.push('celebrity');
+            }
+            
+            return displayCats;
+        }
+
         // Render Stars List
         function renderStars(stars) {
             const container = document.getElementById('rankingList');
@@ -2758,7 +2776,7 @@
                 const isFavorite = favorites.includes(star.id);
                 
                 // Get translated categories
-                const categoryList = (star.categories || [])
+                const categoryList = getDisplayCategories(star.categories)
                     .map(cat => translations[currentLang][cat] || cat)
                     .join(', ');
                 const subtitle = group ? `${group} · ${categoryList}` : categoryList;
@@ -2849,6 +2867,12 @@
                     categoryMatch = true;
                 } else if (category === 'pending') {
                     categoryMatch = star.is_visible === false;
+                } else if (category === 'ordinary') {
+                    categoryMatch = star.categories && star.categories.some(cat => cat === 'politics' || cat === 'business');
+                } else if (category === 'celebrity') {
+                    categoryMatch = star.categories && star.categories.some(cat => 
+                        !['politics', 'business', 'other', 'ordinary', 'celebrity'].includes(cat)
+                    );
                 } else {
                     categoryMatch = star.categories && star.categories.includes(category);
                 }
@@ -2913,8 +2937,9 @@
             // Render Categories
             const categoryContainer = document.getElementById('detailCategories');
             categoryContainer.innerHTML = '';
-            if (star.categories && star.categories.length > 0) {
-                star.categories.forEach(cat => {
+            const displayCats = getDisplayCategories(star.categories);
+            if (displayCats.length > 0) {
+                displayCats.forEach(cat => {
                     const span = document.createElement('span');
                     span.className = 'px-2 py-0.5 bg-slate-800/50 border border-slate-700/50 rounded text-[10px] text-slate-400';
                     span.textContent = translations[currentLang][cat] || cat;
@@ -3373,6 +3398,7 @@
         
         // Make functions globally accessible
         window.openDetailModal = openDetailModal;
+        window.openAddModal = openAddModal;
         window.toggleFavorite = toggleFavorite;
         window.handleQuickVote = handleQuickVote;
     </script>
