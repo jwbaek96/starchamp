@@ -1,8 +1,8 @@
 {
   "id": "kr.starchamp.app",
-  "name": "StarChamp",
-  "short_name": "StarChamp",
-  "description": "Vote for your favorite stars from around the world",
+  "name": "스타챔프 StarChamp",
+  "short_name": "스타챔프",
+  "description": "전 세계 팬들과 함께하는 글로벌 아이돌 투표 플랫폼 스타챔프",
   "start_url": "./index.html",
   "scope": "/",
   "display": "fullscreen",

@@ -3,22 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="당신의 스타를 응원하세요! 전 세계 팬들과 함께하는 실시간 투표 플랫폼 StarChamp">
+    <meta name="description" content="스타챔프(StarChamp) - 당신의 스타를 응원하세요! 전 세계 팬들과 함께하는 실시간 투표 플랫폼">
+    <meta name="keywords" content="스타챔프, StarChamp, 아이돌 투표, 팬덤 투표, K-POP, 연예인 순위, 트로트 투표, 배우 순위">
     <meta name="theme-color" content="#0f172a">
     <meta name="google-site-verification" content="4sA6fUtsNOVaj7_UmR6bG8duAl6w8cSGdVPcrcZ-tEw" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://starchamp.kr/">
-    <meta property="og:title" content="StarChamp - Global Fandom Voting">
-    <meta property="og:description" content="당신의 스타를 응원하세요! 전 세계 팬들과 함께하는 실시간 투표 플랫폼 StarChamp">
+    <meta property="og:title" content="스타챔프 StarChamp - Global Fandom Voting">
+    <meta property="og:description" content="스타챔프(StarChamp) - 당신의 스타를 응원하세요! 전 세계 팬들과 함께하는 실시간 투표 플랫폼">
     <meta property="og:image" content="https://starchamp.kr/logo/logo192.png">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://starchamp.kr/">
-    <meta property="twitter:title" content="StarChamp - Global Fandom Voting">
-    <meta property="twitter:description" content="당신의 스타를 응원하세요! 전 세계 팬들과 함께하는 실시간 투표 플랫폼 StarChamp">
+    <meta property="twitter:title" content="스타챔프 StarChamp - Global Fandom Voting">
+    <meta property="twitter:description" content="스타챔프(StarChamp) - 당신의 스타를 응원하세요! 전 세계 팬들과 함께하는 실시간 투표 플랫폼">
     <meta property="twitter:image" content="https://starchamp.kr/logo/logo.png">
     
     <!-- PWA Settings -->
@@ -27,7 +28,7 @@
     <link rel="apple-touch-icon" href="logo/logo192.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="StarChamp">
+    <meta name="apple-mobile-web-app-title" content="스타챔프">
     
     <!-- Google AdSense / H5 Ads SDK -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5352248234640810" crossorigin="anonymous"></script>
@@ -45,7 +46,7 @@
         gtag('config', 'G-SV6C7L3NBH');
     </script>
 
-    <title>⭐ StarChamp - Global Fandom Voting</title>
+    <title>⭐ 스타챔프 StarChamp - Global Fandom Voting</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -187,6 +188,42 @@
         .modal-backdrop {
             background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(4px);
+        }
+
+        .toggle-active {
+            background-color: #8b5cf6 !important;
+        }
+        .toggle-active div {
+            transform: translateX(1.25rem);
+        }
+
+        /* Detail Modal Tabs */
+        .detail-tab {
+            position: relative;
+            padding: 0.75rem 1rem;
+            color: #94a3b8;
+            font-weight: 600;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .detail-tab.active {
+            color: #8b5cf6;
+        }
+        .detail-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #8b5cf6;
+            border-radius: 2px;
+        }
+        body.light-theme .detail-tab {
+            color: #64748b;
+        }
+        body.light-theme .detail-tab.active {
+            color: #8b5cf6;
         }
         
         /* Country Flag Emojis */
@@ -358,6 +395,15 @@
         body.light-theme .modal-backdrop {
             background: rgba(0, 0, 0, 0.4);
         }
+
+        body.light-theme .bg-slate-700 {
+            background-color: #cbd5e1;
+        }
+
+        body.light-theme .text-slate-300 {
+            color: #475569;
+        }
+
         .space-y-4 > :not([hidden]) ~ :not([hidden]){
             --tw-space-y-reverse: 0;
             margin-top: 7px !important;
@@ -627,7 +673,7 @@
         
         <!-- Footer -->
         <footer class="text-center py-8 text-slate-500 text-sm">
-            <p>&copy; 2025 StarChamp. Made with 💜 for global fandoms.</p>
+            <p>&copy; 2025 스타챔프 StarChamp. Made with 💜 for global fandoms.</p>
             <div class="mt-2">
                 <a href="privacy.html" class="hover:text-violet-400 transition-colors">Privacy Policy</a>
             </div>
@@ -775,6 +821,38 @@
                     <button id="themeToggle" class="glass-card px-4 py-2 rounded-full text-sm font-bold hover:bg-slate-800/50 active:scale-95 transition-all">
                         <span id="themeText" data-i18n="dark_mode">Dark</span>
                     </button>
+                </div>
+
+                <!-- Notification Settings -->
+                <div class="pt-4 border-t border-slate-700/50 space-y-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <i data-lucide="bell" class="w-5 h-5 text-violet-500"></i>
+                        <span class="font-bold" data-i18n="notifications">Notifications</span>
+                    </div>
+                    
+                    <!-- Daily Check-in -->
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-slate-300" data-i18n="notif_checkin">Daily Check-in Reminder</span>
+                        <button id="notifCheckinToggle" class="w-10 h-5 rounded-full bg-slate-700 relative transition-colors">
+                            <div class="absolute top-1 left-1 w-3 h-3 rounded-full bg-white transition-transform"></div>
+                        </button>
+                    </div>
+
+                    <!-- Approval Status -->
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-slate-300" data-i18n="notif_approval">Star Approval Status</span>
+                        <button id="notifApprovalToggle" class="w-10 h-5 rounded-full bg-slate-700 relative transition-colors">
+                            <div class="absolute top-1 left-1 w-3 h-3 rounded-full bg-white transition-transform"></div>
+                        </button>
+                    </div>
+
+                    <!-- New Star -->
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-slate-300" data-i18n="notif_newstar">New Star Registered</span>
+                        <button id="notifNewStarToggle" class="w-10 h-5 rounded-full bg-slate-700 relative transition-colors">
+                            <div class="absolute top-1 left-1 w-3 h-3 rounded-full bg-white transition-transform"></div>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Logout Button (Visible when logged in) -->
@@ -1154,46 +1232,93 @@
     
     <!-- Star Detail Modal -->
     <div id="detailModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
-        <div class="glass-card rounded-2xl max-w-3xl w-full max-h-[95dvh] overflow-y-auto p-6 animate-in">
+        <div class="glass-card rounded-2xl max-w-5xl w-full max-h-[95dvh] overflow-y-auto p-6 animate-in">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-xl md:text-2xl font-bold" id="detailName">Star Name</h3>
                 <button id="closeDetailModal" class="text-slate-400 hover:text-slate-200 transition-colors">
                     <i data-lucide="x" class="w-6 h-6"></i>
                 </button>
             </div>
-            
-            <!-- Star Info -->
-            <div class="mb-6">
-                <div class="flex flex-wrap items-center gap-2 mb-2">
-                    <p class="text-xs md:text-sm text-slate-400" id="detailGroup"></p>
-                    <span class="text-slate-600">•</span>
-                    <div id="detailCategories" class="flex flex-wrap gap-1"></div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Left Column: Info & Stats -->
+                <div class="space-y-8">
+                    <!-- Star Info Section -->
+                    <div class="space-y-6">
+                        <div>
+                            <div class="flex flex-wrap items-center gap-2 mb-2">
+                                <p class="text-xs md:text-sm text-slate-400" id="detailGroup"></p>
+                                <span class="text-slate-600">•</span>
+                                <div id="detailCategories" class="flex flex-wrap gap-1"></div>
+                            </div>
+                            <p class="text-sm md:text-base text-slate-300" id="detailDescription"></p>
+                        </div>
+                        
+                        <!-- Total Votes -->
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <p class="text-slate-400 text-xs md:text-sm mb-1" data-i18n="total_votes">Total Votes</p>
+                            <p class="text-3xl md:text-4xl font-bold gold-gradient text-transparent bg-clip-text" id="detailTotalVotes">0</p>
+                        </div>
+                        
+                        <!-- Vote & Favorite Buttons -->
+                        <div class="flex gap-3">
+                            <button id="voteBtn" class="flex-[2] bg-violet-500 hover:bg-violet-600 text-white vote-glow px-4 md:px-6 py-3 md:py-4 rounded-full font-bold text-base md:text-lg active:scale-95 transition-all flex items-center justify-center gap-2">
+                                <i data-lucide="heart" class="w-5 h-5 md:w-6 md:h-6"></i>
+                                <span data-i18n="vote_now">Vote Now</span>
+                            </button>
+                            <button id="detailFavoriteBtn" class="flex-1 glass-card hover:bg-slate-800/70 px-4 md:px-6 py-3 md:py-4 rounded-full font-bold text-base md:text-lg active:scale-95 transition-all flex items-center justify-center gap-2">
+                                <i id="detailFavoriteIcon" data-lucide="star" class="w-5 h-5 md:w-6 md:h-6"></i>
+                            </button>
+                            <button id="detailShareBtn" class="flex-1 glass-card hover:bg-slate-800/70 px-4 md:px-6 py-3 md:py-4 rounded-full font-bold text-base md:text-lg active:scale-95 transition-all flex items-center justify-center gap-2">
+                                <i data-lucide="share-2" class="w-5 h-5 md:w-6 md:h-6"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Tabs Navigation (Hidden on Desktop) -->
+                    <div class="flex lg:hidden border-b border-slate-700/50 mb-6">
+                        <div class="detail-tab active" id="tabVotesBtn" data-i18n="tab_votes">Vote Stats</div>
+                        <div class="detail-tab" id="tabCommentsBtn" data-i18n="tab_comments">Cheer</div>
+                    </div>
+                    
+                    <!-- Vote Stats Section (Always visible on Desktop, Tabbed on Mobile) -->
+                    <div id="tabVotesContent" class="space-y-6">
+                        <div>
+                            <h4 class="font-bold mb-4 flex items-center gap-2">
+                                <i data-lucide="globe" class="w-5 h-5"></i>
+                                <span data-i18n="votes_by_country">Votes by Country</span>
+                            </h4>
+                            <div id="countryStats" class="space-y-3">
+                                <!-- Dynamic country stats will be inserted here -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <p class="text-sm md:text-base text-slate-300" id="detailDescription"></p>
-            </div>
-            
-            <!-- Total Votes -->
-            <div class="glass-card rounded-xl p-4 mb-6 text-center">
-                <p class="text-slate-400 text-xs md:text-sm mb-1" data-i18n="total_votes">Total Votes</p>
-                <p class="text-3xl md:text-4xl font-bold gold-gradient text-transparent bg-clip-text" id="detailTotalVotes">0</p>
-            </div>
-            
-            <!-- Vote & Favorite Buttons -->
-            <div class="flex gap-3 mb-6">
-                <button id="voteBtn" class="flex-[2] bg-violet-500 hover:bg-violet-600 text-white vote-glow px-4 md:px-6 py-3 md:py-4 rounded-full font-bold text-base md:text-lg active:scale-95 transition-all flex items-center justify-center gap-2">
-                    <i data-lucide="heart" class="w-5 h-5 md:w-6 md:h-6"></i>
-                    <span data-i18n="vote_now">Vote Now</span>
-                </button>
-                <button id="detailFavoriteBtn" class="flex-1 glass-card hover:bg-slate-800/70 px-4 md:px-6 py-3 md:py-4 rounded-full font-bold text-base md:text-lg active:scale-95 transition-all flex items-center justify-center gap-2">
-                    <i id="detailFavoriteIcon" data-lucide="star" class="w-5 h-5 md:w-6 md:h-6"></i>
-                </button>
-                <button id="detailShareBtn" class="flex-1 glass-card hover:bg-slate-800/70 px-4 md:px-6 py-3 md:py-4 rounded-full font-bold text-base md:text-lg active:scale-95 transition-all flex items-center justify-center gap-2">
-                    <i data-lucide="share-2" class="w-5 h-5 md:w-6 md:h-6"></i>
-                </button>
+
+                <!-- Right Column: Comments (Always visible on Desktop, Tabbed on Mobile) -->
+                <div id="tabCommentsContent" class="space-y-6">
+                    <h4 class="font-bold flex items-center gap-2 lg:mb-2">
+                        <i data-lucide="message-circle" class="w-5 h-5 text-violet-500"></i>
+                        <span data-i18n="tab_comments">Cheer</span>
+                    </h4>
+                    <!-- Comment Input -->
+                    <div id="commentInputArea" class="space-y-3">
+                        <textarea id="commentInput" rows="2" class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-violet-500 transition-colors text-slate-200" data-i18n-placeholder="comment_placeholder"></textarea>
+                        <button id="submitCommentBtn" class="w-full bg-violet-500 hover:bg-violet-600 text-white py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="send" class="w-4 h-4"></i>
+                            <span data-i18n="comment_submit">Post</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Comments List -->
+                    <div id="commentsList" class="space-y-4 max-h-[500px] overflow-y-auto pr-2">
+                        <!-- Comments will be inserted here -->
+                    </div>
+                </div>
             </div>
             
             <!-- Admin Actions -->
-            <div id="adminActions" class="hidden mb-6 pt-6 border-t border-slate-700/50 space-y-3">
+            <div id="adminActions" class="hidden mt-8 pt-6 border-t border-slate-700/50 space-y-3">
                 <button id="approveStarBtn" class="w-full bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-full font-bold active:scale-95 transition-all flex items-center justify-center gap-2">
                     <i data-lucide="check-circle" class="w-5 h-5"></i>
                     <span>Approve Star</span>
@@ -1207,17 +1332,6 @@
                         <i data-lucide="trash-2" class="w-5 h-5"></i>
                         <span>Delete</span>
                     </button>
-                </div>
-            </div>
-            
-            <!-- Country Stats -->
-            <div>
-                <h4 class="font-bold mb-4 flex items-center gap-2">
-                    <i data-lucide="globe" class="w-5 h-5"></i>
-                    <span data-i18n="votes_by_country">Votes by Country</span>
-                </h4>
-                <div id="countryStats" class="space-y-3">
-                    <!-- Dynamic country stats will be inserted here -->
                 </div>
             </div>
         </div>
@@ -1385,6 +1499,16 @@
                 theme: "테마",
                 dark_mode: "다크",
                 light_mode: "라이트",
+                notifications: "알림 설정",
+                notif_checkin: "데일리 체크인",
+                notif_approval: "승인 상태",
+                notif_newstar: "신규 스타 등록",
+                tab_votes: "득표현황",
+                tab_comments: "응원",
+                comment_placeholder: "응원의 한마디를 남겨주세요...",
+                comment_submit: "등록",
+                comment_delete: "삭제",
+                login_to_comment: "댓글을 남기려면 로그인이 필요합니다.",
                 login_google: "Google로 로그인",
                 logout: "로그아웃",
                 tickets: "투표권",
@@ -1456,6 +1580,16 @@
                 add_star_prompt: "Can't find your star?",
                 add_star_action: "Register them!",
                 light_mode: "Light",
+                notifications: "Notifications",
+                notif_checkin: "Daily Check-in Reminder",
+                notif_approval: "Star Approval Status",
+                notif_newstar: "New Star Registered",
+                tab_votes: "Vote Stats",
+                tab_comments: "Cheer",
+                comment_placeholder: "Write a message of support...",
+                comment_submit: "Post",
+                comment_delete: "Delete",
+                login_to_comment: "Please sign in to leave a comment.",
                 login_google: "Sign in with Google",
                 logout: "Logout",
                 tickets: "Tickets",
@@ -1666,6 +1800,7 @@
             
             applyTheme();
             updateTranslations();
+            loadNotificationSettings();
             setupEventListeners();
             loadStars();
             initLucideIcons();
@@ -1834,6 +1969,9 @@
             // Settings Modal
             document.getElementById('closeSettingsModal').addEventListener('click', closeSettingsModal);
             document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+            document.getElementById('notifCheckinToggle').addEventListener('click', () => toggleNotification('checkin'));
+            document.getElementById('notifApprovalToggle').addEventListener('click', () => toggleNotification('approval'));
+            document.getElementById('notifNewStarToggle').addEventListener('click', () => toggleNotification('newstar'));
 
             // Edit Star Modal
             document.getElementById('closeEditModal').addEventListener('click', closeEditModal);
@@ -1910,6 +2048,13 @@
                     handleShare(currentStarId, name);
                 }
             });
+
+            // Detail Modal Tabs
+            document.getElementById('tabVotesBtn').addEventListener('click', () => switchDetailTab('tabVotes'));
+            document.getElementById('tabCommentsBtn').addEventListener('click', () => switchDetailTab('tabComments'));
+
+            // Comment Actions
+            document.getElementById('submitCommentBtn').addEventListener('click', submitComment);
             
             // Search & Filter
             const searchInput = document.getElementById('searchInput');
@@ -2020,6 +2165,45 @@
                 themeText.textContent = translations[currentLang].dark_mode;
             }
             initLucideIcons();
+        }
+
+        // Notification Settings Logic
+        let notificationSettings = {
+            checkin: true,
+            approval: true,
+            newstar: true
+        };
+
+        function loadNotificationSettings() {
+            const saved = localStorage.getItem('notificationSettings');
+            if (saved) {
+                notificationSettings = JSON.parse(saved);
+            }
+            updateNotificationUI();
+        }
+
+        function updateNotificationUI() {
+            const toggles = {
+                checkin: document.getElementById('notifCheckinToggle'),
+                approval: document.getElementById('notifApprovalToggle'),
+                newstar: document.getElementById('notifNewStarToggle')
+            };
+
+            for (const [key, el] of Object.entries(toggles)) {
+                if (el) {
+                    if (notificationSettings[key]) {
+                        el.classList.add('toggle-active');
+                    } else {
+                        el.classList.remove('toggle-active');
+                    }
+                }
+            }
+        }
+
+        function toggleNotification(type) {
+            notificationSettings[type] = !notificationSettings[type];
+            localStorage.setItem('notificationSettings', JSON.stringify(notificationSettings));
+            updateNotificationUI();
         }
 
         // Modal Functions
@@ -2597,7 +2781,8 @@
                 setTimeout(() => {
                     showNotification(
                         currentLang === 'ko' ? '🎁 오늘의 투표권!' : '🎁 Daily Tickets!',
-                        currentLang === 'ko' ? '오늘의 무료 투표권 5개가 기다리고 있어요. 지금 받으러 오세요!' : '5 free tickets are waiting for you. Come and get them now!'
+                        currentLang === 'ko' ? '오늘의 무료 투표권 5개가 기다리고 있어요. 지금 받으러 오세요!' : '5 free tickets are waiting for you. Come and get them now!',
+                        'checkin'
                     );
                 }, 3000); // Show after 3 seconds
             }
@@ -2622,7 +2807,8 @@
                         const starData = change.doc.data();
                         showNotification(
                             currentLang === 'ko' ? '✅ 승인 완료!' : '✅ Approved!',
-                            currentLang === 'ko' ? `신청하신 ${starData.name.ko} 스타가 승인되어 이제 투표가 가능합니다!` : `Your star ${starData.name.en} has been approved and is now open for voting!`
+                            currentLang === 'ko' ? `신청하신 ${starData.name.ko} 스타가 승인되어 이제 투표가 가능합니다!` : `Your star ${starData.name.en} has been approved and is now open for voting!`,
+                            'approval'
                         );
                     }
                 });
@@ -2653,7 +2839,8 @@
 
                         showNotification(
                             currentLang === 'ko' ? '✨ 신규 스타 등장!' : '✨ New Star!',
-                            currentLang === 'ko' ? `새로운 스타 ${starData.name.ko}이(가) 등록되었습니다. 지금 확인해보세요!` : `A new star ${starData.name.en} has been registered. Check them out now!`
+                            currentLang === 'ko' ? `새로운 스타 ${starData.name.ko}이(가) 등록되었습니다. 지금 확인해보세요!` : `A new star ${starData.name.en} has been registered. Check them out now!`,
+                            'newstar'
                         );
                     }
                 });
@@ -2661,7 +2848,9 @@
             userNotificationsUnsubscribe.push(unsub);
         }
 
-        function showNotification(title, body) {
+        function showNotification(title, body, type) {
+            if (type && !notificationSettings[type]) return;
+            
             if (Notification.permission === 'granted') {
                 const notification = new Notification(title, {
                     body: body,
@@ -2960,6 +3149,12 @@
             // Render country stats
             renderCountryStats(star.votes_by_country || {}, star.votes || 0);
             
+            // Reset Tabs
+            switchDetailTab('tabVotes');
+            
+            // Load Comments
+            loadComments(starId);
+
             // Admin Actions
             const adminActions = document.getElementById('adminActions');
             const approveBtn = document.getElementById('approveStarBtn');
@@ -2982,6 +3177,133 @@
         function closeDetailModal() {
             document.getElementById('detailModal').classList.add('hidden');
             currentStarId = null;
+            if (commentsUnsubscribe) {
+                commentsUnsubscribe();
+                commentsUnsubscribe = null;
+            }
+        }
+
+        // Detail Modal Tab Switching
+        function switchDetailTab(tabId) {
+            const votesContent = document.getElementById('tabVotesContent');
+            const commentsContent = document.getElementById('tabCommentsContent');
+            const votesBtn = document.getElementById('tabVotesBtn');
+            const commentsBtn = document.getElementById('tabCommentsBtn');
+
+            // On desktop (lg breakpoint), both should be visible
+            if (window.innerWidth >= 1024) {
+                votesContent?.classList.remove('hidden');
+                commentsContent?.classList.remove('hidden');
+                return;
+            }
+
+            // On mobile, toggle visibility
+            if (tabId === 'tabVotes') {
+                votesContent?.classList.remove('hidden');
+                commentsContent?.classList.add('hidden');
+                votesBtn?.classList.add('active');
+                commentsBtn?.classList.remove('active');
+            } else {
+                votesContent?.classList.add('hidden');
+                commentsContent?.classList.remove('hidden');
+                votesBtn?.classList.remove('active');
+                commentsBtn?.classList.add('active');
+            }
+        }
+
+        // Comment Logic
+        let commentsUnsubscribe = null;
+
+        function loadComments(starId) {
+            if (commentsUnsubscribe) commentsUnsubscribe();
+            
+            const q = query(
+                collection(db, 'stars', starId, 'comments'),
+                orderBy('created_at', 'desc'),
+                limit(50)
+            );
+            
+            commentsUnsubscribe = onSnapshot(q, (snapshot) => {
+                const comments = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                renderComments(comments);
+            });
+        }
+
+        function renderComments(comments) {
+            const container = document.getElementById('commentsList');
+            if (comments.length === 0) {
+                container.innerHTML = `<p class="text-slate-500 text-center py-8">${currentLang === 'ko' ? '첫 번째 응원을 남겨보세요!' : 'Be the first to cheer!'}</p>`;
+                return;
+            }
+            
+            container.innerHTML = comments.map(comment => {
+                const date = comment.created_at?.toDate ? comment.created_at.toDate() : new Date();
+                const timeStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const isMyComment = currentUser && comment.author_uid === currentUser.uid;
+                const countryFlag = comment.country_code ? (countryNames[comment.country_code] ? comment.country_code.toUpperCase().replace(/./g, char => String.fromCodePoint(char.charCodeAt(0) + 127397)) : '') : '';
+                
+                return `
+                    <div class="glass-card p-4 rounded-2xl space-y-2">
+                        <div class="flex justify-between items-start">
+                            <div class="flex items-center gap-2">
+                                <span class="text-lg">${countryFlag}</span>
+                                <span class="font-bold text-sm text-violet-400">${comment.author_name || 'Anonymous'}</span>
+                                <span class="text-[10px] text-slate-500">${timeStr}</span>
+                            </div>
+                            ${isMyComment ? `
+                                <button onclick="deleteComment('${comment.id}')" class="text-slate-500 hover:text-red-400 transition-colors">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            ` : ''}
+                        </div>
+                        <p class="text-sm text-slate-300 whitespace-pre-wrap">${comment.content}</p>
+                    </div>
+                `;
+            }).join('');
+            initLucideIcons();
+        }
+
+        async function submitComment() {
+            if (!currentUser) {
+                alert(translations[currentLang].login_to_comment);
+                openLoginModal();
+                return;
+            }
+            
+            const input = document.getElementById('commentInput');
+            const content = input.value.trim();
+            if (!content) return;
+            
+            try {
+                const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+                const userData = userDoc.data() || {};
+                
+                await addDoc(collection(db, 'stars', currentStarId, 'comments'), {
+                    content: content,
+                    author_uid: currentUser.uid,
+                    author_name: currentUser.displayName,
+                    country_code: userData.country || 'KR',
+                    created_at: serverTimestamp()
+                });
+                
+                input.value = '';
+            } catch (error) {
+                console.error("Error submitting comment:", error);
+                alert("Error posting comment.");
+            }
+        }
+
+        window.deleteComment = async function(commentId) {
+            if (!confirm(currentLang === 'ko' ? '댓글을 삭제하시겠습니까?' : 'Delete this comment?')) return;
+            
+            try {
+                await deleteDoc(doc(db, 'stars', currentStarId, 'comments', commentId));
+            } catch (error) {
+                console.error("Error deleting comment:", error);
+            }
         }
         
         function renderCountryStats(votesByCountry, totalVotes) {
